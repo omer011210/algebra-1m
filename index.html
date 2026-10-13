@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>אלגברה 1מ – מחברת לימוד</title>
+  <meta name="description" content="אתר לימוד אינטראקטיבי לאלגברה 1מ: הגדרות ומשפטים, דוגמאות פתורות ושאלות ממבחני עבר לפי נושאים.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232F5BD3'/%3E%3Ctext x='16' y='23' font-size='18' text-anchor='middle' fill='white' font-family='serif'%3E%CE%BB%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    /* החלת ערכת נושא לפני הציור כדי למנוע הבהוב */
+    (function () {
+      try {
+        var t = localStorage.getItem('alg1m-theme');
+        if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">דלג לתוכן</a>
+
+  <header class="topbar">
+    <button class="icon-btn menu-btn" id="menuBtn" aria-label="פתיחת תפריט נושאים" aria-expanded="false" aria-controls="sidebar">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <a class="brand" href="#/">
+      <span class="brand-mark" aria-hidden="true">λ</span>
+      <span class="brand-text">אלגברה 1מ</span>
+    </a>
+    <div class="topbar-progress" id="topProgress" aria-live="polite"></div>
+    <button class="icon-btn" id="themeBtn" aria-label="החלפת מצב כהה/בהיר">
+      <svg class="i-moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="currentColor"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></g></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="sidebar" aria-label="נושאי הקורס">
+      <div class="sidebar-head">
+        <a href="#/" class="side-home">סקירה כללית</a>
+      </div>
+      <ol class="topic-list" id="topicList"></ol>
+      <p class="side-note">הסימון ✓ נשמר בדפדפן שלך בלבד.</p>
+    </nav>
+    <div class="scrim" id="scrim" hidden></div>
+
+    <main id="main" class="main" tabindex="-1"></main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+  <script src="data/topics.js"></script>
+  <script src="data/theorems.js"></script>
+  <script src="data/examples.js"></script>
+  <script src="data/practice/2021-spring-a.js"></script>
+  <script src="data/practice/2021-spring-b.js"></script>
+  <script src="data/practice/2022-spring-a.js"></script>
+  <script src="data/practice/2022-spring-b.js"></script>
+  <script src="data/practice/2023-spring-a.js"></script>
+  <script src="data/practice/2023-spring-b.js"></script>
+  <script src="data/practice/2024-winter-a.js"></script>
+  <script src="data/practice/2024-winter-b.js"></script>
+  <script src="data/practice/2024-spring-a.js"></script>
+  <script src="data/practice/2024-spring-b.js"></script>
+  <script src="data/practice/2025-spring-a.js"></script>
+  <script src="data/practice/2025-spring-b.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
