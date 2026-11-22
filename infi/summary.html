@@ -1,0 +1,636 @@
+<title>אינפי 1מ׳ · מחברת בוחן אמצע</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&family=IBM+Plex+Mono:wght@500&display=swap">
+<script>
+window.MathJax = { tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" async></script>
+<style>
+/* Layout: one reading column like a notebook, a sticky table of contents on wide screens, magenta highlighter = "recurs in quizzes" */
+:root{
+  --paper:#fbfaf7; --ink:#1d1b26; --muted:#5f5a6e; --rule:#e4e0ea; --card:#ffffff;
+  --hl:#e0338f; --hl-soft:#fde3f0; --blue:#3557c6; --blue-soft:#e6ecfb; --teal:#11806d; --teal-soft:#dcf3ee; --amber:#a35d00; --amber-soft:#fff1d9;
+  --f-display:"Frank Ruhl Libre", "David", Georgia, serif;
+  --f-body:"Assistant", "Segoe UI", Arial, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#16141c; --ink:#ece9f3; --muted:#a8a2b8; --rule:#2d2938; --card:#1e1b26;
+  --hl:#ff6db3; --hl-soft:#3f1d31; --blue:#8aa5ff; --blue-soft:#1f2747; --teal:#5fd3bc; --teal-soft:#143530; --amber:#ffbf5e; --amber-soft:#3a2a10; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --paper:#16141c; --ink:#ece9f3; --muted:#a8a2b8; --rule:#2d2938; --card:#1e1b26;
+  --hl:#ff6db3; --hl-soft:#3f1d31; --blue:#8aa5ff; --blue-soft:#1f2747; --teal:#5fd3bc; --teal-soft:#143530; --amber:#ffbf5e; --amber-soft:#3a2a10; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.7;direction:rtl;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 4rem}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:240px minmax(0,1fr);gap:48px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)} nav.toc{position:static!important;max-height:none!important}}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top, 0px) + 16px);align-self:start;max-height:calc(100vh - 32px);overflow:auto;padding-block:24px;font-size:14.5px}
+nav.toc a{display:block;color:var(--muted);text-decoration:none;padding:3px 10px;border-inline-start:2px solid var(--rule)}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--ink);border-color:var(--hl);outline:none}
+nav.toc .sub{padding-inline-start:22px;font-size:13.5px}
+main{min-width:0;max-width:780px}
+header.top{padding-block:48px 24px;border-bottom:1px solid var(--rule)}
+.eyebrow{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.08em;color:var(--hl)}
+h1{font-family:var(--f-display);font-weight:900;font-size:clamp(2.1rem,5vw,3.2rem);line-height:1.1;margin:.3em 0 .4em;text-wrap:balance}
+h2{font-family:var(--f-display);font-weight:700;font-size:1.85rem;margin:2.6em 0 .6em;padding-top:.4em;border-top:3px solid var(--ink);text-wrap:balance}
+h3{font-family:var(--f-display);font-weight:700;font-size:1.3rem;margin:2em 0 .5em;text-wrap:balance}
+h4{font-size:1.05rem;margin:1.4em 0 .3em}
+p{margin:.5em 0}
+.lead{font-size:1.1rem;color:var(--muted);max-width:62ch}
+mark{background:linear-gradient(transparent 35%, var(--hl-soft) 35%);color:inherit;padding:0 2px}
+.legend{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:18px;font-size:14.5px;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:700;padding:1px 8px;border-radius:99px;white-space:nowrap;vertical-align:middle;line-height:1.6}
+.chip.rep{background:var(--hl);color:#fff}
+.chip.add{background:var(--teal-soft);color:var(--teal)}
+.chip.heavy{background:var(--amber-soft);color:var(--amber)}
+.chip.src{background:var(--blue-soft);color:var(--blue);font-weight:600}
+.thm{border-inline-start:3px solid var(--rule);padding:6px 16px 8px;margin:14px 0;background:transparent}
+.thm.r{border-color:var(--hl);background:linear-gradient(to left, var(--hl-soft), transparent 55%)}
+.thm .name{font-weight:700;display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
+.thm .name b{font-family:var(--f-display);font-size:1.08rem}
+.explain{margin-top:8px;padding:10px 14px;background:var(--amber-soft);border-radius:6px;font-size:15.5px}
+.explain::before{content:"למה זה עובד ואיך משתמשים: ";font-weight:700;color:var(--amber)}
+.proof{margin-top:8px;padding:10px 14px;border:1px dashed var(--rule);border-radius:6px;font-size:15.5px;background:var(--card)}
+.proof::before{content:"שלד הוכחה: ";font-weight:700;color:var(--blue)}
+.tbl{overflow-x:auto;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+th,td{border-bottom:1px solid var(--rule);padding:7px 10px;text-align:right;vertical-align:top}
+th{font-weight:700;background:var(--card)}
+.bar{display:inline-block;height:10px;background:var(--hl);border-radius:2px;vertical-align:middle}
+.tech{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:12px 16px;margin:14px 0}
+.tech h4{margin:0 0 .3em;font-family:var(--f-display);font-size:1.12rem}
+.quiz{border-top:1px solid var(--rule);margin-top:2em;padding-top:.6em}
+.quiz h3{margin-top:.6em;display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.q{margin:10px 0 4px;font-weight:600}
+.s{margin:0 0 10px;padding-inline-start:14px;border-inline-start:2px solid var(--teal);color:var(--ink)}
+.s::before{content:"פתרון: ";color:var(--teal);font-weight:700}
+.tip{background:var(--blue-soft);padding:10px 14px;border-radius:6px;margin:12px 0}
+.tip b{color:var(--blue)}
+ul,ol{padding-inline-start:1.4em}
+li{margin:.25em 0}
+mjx-container{direction:ltr}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;max-width:100%}
+a{color:var(--blue)}
+:focus-visible{outline:2px solid var(--hl);outline-offset:2px}
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="תוכן עניינים">
+  <a href="#how">איך להשתמש בדף</a>
+  <a href="#analysis">1. ניתוח בחני העבר</a>
+  <a class="sub" href="#freq">שכיחות נושאים</a>
+  <a class="sub" href="#repeats">שאלות שחזרו כמעט מילה במילה</a>
+  <a class="sub" href="#format">מבנה הבוחן ומה זה אומר עליך</a>
+  <a href="#tech">2. טכניקות שחוזרות</a>
+  <a href="#thm">3. רשימת המשפטים</a>
+  <a class="sub" href="#t-basic">א. יסודות, sup ו-inf</a>
+  <a class="sub" href="#t-lim">ב. גבולות</a>
+  <a class="sub" href="#t-calc">ג. כלי חישוב</a>
+  <a class="sub" href="#t-mono">ד. מונוטוניות וקנטור</a>
+  <a class="sub" href="#t-sub">ה. תתי-סדרות ו-BW</a>
+  <a class="sub" href="#t-cauchy">ו. קושי</a>
+  <a class="sub" href="#t-topo">ז. טופולוגיה והיינה-בורל</a>
+  <a class="sub" href="#t-pow">ח. חזקות ממשיות</a>
+  <a href="#proofs">4. הוכחות שנשאלו כמשפט</a>
+  <a href="#cex">5. בנק דוגמאות נגדיות</a>
+  <a href="#quizzes">6. כל 20 הבחנים עם פתרונות</a>
+  <a href="#plan">7. סדר עדיפויות לחזרה</a>
+</nav>
+
+<main>
+<header class="top" id="how">
+  <div class="eyebrow">104031 · אינפי 1מ׳ · בוחן אמצע</div>
+  <h1>מחברת בוחן אמצע: משפטים, טכניקות ו-20 בחני עבר</h1>
+  <p class="lead">הדף נבנה מ-20 בחני אמצע (חורף/אביב תשע״ה עד חורף תשפ״ו + אודיסאה תשפ״ה) עם הפתרונות הרשמיים, ומהדף בכתב יד שלך עם רשימת המשפטים. כל משפט מסומן לפי כמה פעמים הוא הופיע או נדרש בבחנים.</p>
+  <div class="legend">
+    <span><span class="chip rep">חוזר ×N</span> הופיע או נדרש ב-N בחנים. אלה צריכים להיות אצלך בעל-פה</span>
+    <span><span class="chip heavy">כבד</span> יש פסקת הסבר</span>
+    <span><span class="chip add">מהדף שלך</span> לא היה בסיכום שבניתי מהבחנים, נוסף מהדף שצירפת</span>
+    <span><span class="chip src">חורף פ״ג 1א</span> איפה זה נשאל</span>
+  </div>
+</header>
+
+<!-- ===================== ANALYSIS ===================== -->
+<h2 id="analysis">1. ניתוח בחני העבר</h2>
+<p>השורה התחתונה: הבוחן כמעט תמיד בנוי מ-<b>שתי שאלות הוכחה</b> (הגדרה, הוכחת משפט מההרצאה, ו"הוכח או הפרך") ו<b>שאלה אחת של תשובות סופיות</b> ("ג׳ורג׳י חפר בגינה", טבלה או התאמת תנאים). כ-60% מהניקוד נמצא בהוכחות, והן מתרכזות סביב ארבעה צירים: <mark>תתי-סדרות וגבולות חלקיים</mark>, <mark>הוכחה לפי הגדרת ε-N</mark>, <mark>מונוטונית וחסומה (כולל סדרות נסיגה)</mark>, ו-<mark>sup, inf, limsup ו-liminf</mark>.</p>
+
+<h3 id="freq">שכיחות נושאים ב-20 הבחנים</h3>
+<div class="tbl"><table>
+<thead><tr><th>נושא</th><th>מס׳ בחנים</th><th></th><th>איפה</th></tr></thead>
+<tbody>
+<tr><td>גבול חלקי, תתי-סדרות, בולצאנו-ויירשטראס</td><td>15</td><td><span class="bar" style="width:150px"></span></td><td>כמעט כל בוחן מאז תשע״ה</td></tr>
+<tr><td>הוכחה לפי הגדרת הגבול (ε-N) או ניסוח הגדרה ושלילתה</td><td>12</td><td><span class="bar" style="width:120px"></span></td><td>אביב ע״ט, אביב פ״ה, אודיסאה, חורף פ״ו, חורף ע״ט, אביב פ׳...</td></tr>
+<tr><td>חישוב גבולות (מנה, שורש, סנדוויץ׳, e)</td><td>12</td><td><span class="bar" style="width:120px"></span></td><td>שאלה 3 ברוב הבחנים</td></tr>
+<tr><td>limsup ו-liminf</td><td>10</td><td><span class="bar" style="width:100px"></span></td><td>חורף ע״ו, ע״ז, ע״ח, פ״ב, פ״ג, אביב ע״ה, ע״ט, פ׳, פ״ה...</td></tr>
+<tr><td>sup ו-inf של קבוצות (הגדרה ואפיון ε)</td><td>8</td><td><span class="bar" style="width:80px"></span></td><td>אביב ע״ח, ע״ט, חורף פ״א, פ״ג, אודיסאה, אביב ע״ה, חורף ע״ה</td></tr>
+<tr><td>מונוטונית וחסומה ⇐ מתכנסת (הוכחת המשפט)</td><td>5</td><td><span class="bar" style="width:50px"></span></td><td>חורף ע״ה, אביב ע״ו, אביב פ״א, חורף ע״ח, (אביב פ״ה בשימוש)</td></tr>
+<tr><td>סדרת נסיגה: הוכח התכנסות ומצא גבול</td><td>4</td><td><span class="bar" style="width:40px"></span></td><td>חורף ע״ה, אביב ע״ו, אביב פ״א, אביב פ״ה</td></tr>
+<tr><td>תנאי קושי</td><td>5</td><td><span class="bar" style="width:50px"></span></td><td>אביב ע״ח, אביב פ״ג, חורף פ״א, אביב ע״ה, חורף ע״ו</td></tr>
+<tr><td>דוגמאות נגדיות (פתוחות או טבלה)</td><td>9</td><td><span class="bar" style="width:90px"></span></td><td>אביב ע״ה, חורף ע״ה, ע״ו, ע״ז, ע״ח, אביב פ׳, חורף ע״ט, פ׳, פ״ו</td></tr>
+<tr><td>הלמה של קנטור</td><td>1</td><td><span class="bar" style="width:10px"></span></td><td>חורף ע״ט</td></tr>
+</tbody></table></div>
+
+<h3 id="repeats">שאלות שחזרו כמעט מילה במילה</h3>
+<p>זה החלק הכי משתלם בדף. המרצים ממחזרים שאלות:</p>
+<ul>
+<li><b>נסיגה \(a_1=1,\ a_{n+1}=\frac12\left(a_n+\frac{2}{a_n}\right)\)</b> עם רמז "אי-שוויון הממוצעים": <span class="chip src">אביב ע״ו 2ב</span> <span class="chip src">אביב פ״א 1ב</span>. ובשתי הפעמים סעיף א׳ היה <b>הוכחת "מונוטונית יורדת וחסומה מלמטה ⇐ מתכנסת"</b>. גרסאות קרובות: <span class="chip src">חורף ע״ה 1</span> (\(a_{n+1}=\frac{2+2a_n}{2+a_n}\)), <span class="chip src">אביב פ״ה 1</span> (\(a_{n+1}=\frac{3(1+a_n)}{3+a_n}\)).</li>
+<li><b>"לכל ε יש אינסוף איברים ב-\((L-\varepsilon,L)\) ⇐ יש תת-סדרה עולה ממש"</b> ואחריו "תן דוגמה שיש לה גם תת-סדרה יורדת ממש": <span class="chip src">אביב ע״ז 1</span> <span class="chip src">חורף פ״ב 1</span>.</li>
+<li><b>ג׳ורג׳י והשלישייה</b> \(\left(\frac{n+1}{n}\right)^{kn},\ \frac{n^{kn}}{(kn)!},\ \frac{n^k}{((kn)!)^{1/n}}\) עם גבול, מבחן מנה ומבחן שורש: <span class="chip src">חורף פ׳ 3</span> (k=3) <span class="chip src">חורף פ״ג 3</span> (k=2), ושוב \(\left(\frac{n^{2n}}{(2n)!}\right)^{1/n}\) ב-<span class="chip src">חורף פ״ו 2ד</span>.</li>
+<li><b>\(\lim \max\{a_n,b_n\}=\max\{a,b\}\) לפי ההגדרה בלבד</b>: <span class="chip src">אביב פ״ה 3</span> <span class="chip src">אודיסאה 3</span>, ובשתיהן סעיף א׳ הוא "השלם את הגדרת הגבול".</li>
+<li><b>"L גבול חלקי ⇔ לכל ε יש אינסוף איברים בסביבה"</b>: <span class="chip src">אביב ע״ו 1</span>, והוא כלי בעוד לפחות 6 שאלות.</li>
+<li><b>"לכל סדרה חסומה/מתכנסת יש תת-סדרה מונוטונית"</b> והוכחת BW: <span class="chip src">אביב פ״א 2</span> <span class="chip src">חורף פ׳ 2</span> ("מרתפים") <span class="chip src">אביב ע״ה 2</span>.</li>
+<li><b>"אוסף הגבולות החלקיים סגור"</b> (ג״ח של ג״ח הוא ג״ח): <span class="chip src">חורף פ׳ 1ב</span> <span class="chip src">חורף פ״ג 1א</span>, ובגרסה מוסווית ב-<span class="chip src">חורף ע״ט 2ב</span>.</li>
+<li><b>"לסדרה חסומה עם ג״ח יחיד L ⇐ מתכנסת ל-L"</b>: <span class="chip src">חורף פ״ו 2ב</span>, ובתוך הפתרונות של אביב ע״ה 2, אביב ע״ט 1ב, חורף ע״ו 2ב.</li>
+<li><b>התאמת תנאים בכמתים להגדרות</b> (sup, חסום, קושי, ג״ח): <span class="chip src">אביב ע״ח 3</span> <span class="chip src">חורף ע״ז 3</span> <span class="chip src">חורף פ״ו 2א</span>.</li>
+</ul>
+
+<h3 id="format">מבנה הבוחן ומה זה אומר עליך</h3>
+<ul>
+<li><b>הגדרות שווים 5-10 נקודות "חינם" בכמעט כל בוחן:</b> גבול, שלילת גבול, קושי, sup/inf/min, גבול חלקי, הלמה של קנטור, BW. ניסוח לא מדויק (למשל "קיים N" לפני "לכל ε") מאבד את כל הסעיף. שים לב: בחורף ע״ט ובאביב ע״ט נאמר במפורש ש"הגדרה + המילים לא מתקיים" לא תתקבל, וצריך לכתוב את השלילה בכמתים.</li>
+<li><b>שאלת התשובות הסופיות היא כמעט תמיד מבחן מנה/שורש</b> על \(\frac{x^n n!}{n^n}\), \(\frac{n^{kn}}{(kn)!}\) או \(\binom{2n}{n}\) ועל הגבול \(\sqrt[n]{n!}/n\to 1/e\). אם אתה זוכר ש-\(\frac{(n+1)^n}{n^n}\to e\), חצי מהשאלה פתורה. בכמה בחנים יש ניקוד שלילי על תשובה שגויה (אביב ע״ו: מינוס 2), אז לא מנחשים.</li>
+<li><b>"הוכח או הפרך"</b> מופיע בתדירות גבוהה. כמעט תמיד התשובה היא "הפרך", עם דוגמה מהבנק בסעיף 5.</li>
+<li><b>מגבלת אורך:</b> באביב ע״ז נאמר שתשובה מעל 12 שורות לא תיבדק. כתיבה תמציתית היא חלק מהציון.</li>
+<li><b>מה לא נשאל אף פעם עד היום:</b> היינה-בורל, חזקות ממשיות, צ׳זרו (כהוכחה). אלה מהדף שלך וכדאי להכיר אותם, אבל הם בעדיפות נמוכה לבוחן האמצע. ייתכן שהחומר של הסמסטר שלך מרחיב, אז אל תדלג עליהם לגמרי.</li>
+</ul>
+
+<!-- ===================== TECHNIQUES ===================== -->
+<h2 id="tech">2. טכניקות שחוזרות על עצמן</h2>
+<p>אלה ה"מהלכים" שמופיעים שוב ושוב בפתרונות הרשמיים. אם תשלוט בשמונה הראשונים, תדע לפתוח כמעט כל שאלת הוכחה.</p>
+
+<div class="tech"><h4>T1. בניית תת-סדרה באינדוקציה עם \(\varepsilon_k=\frac1k\) <span class="chip rep">חוזר ×9</span></h4>
+<p>בוחרים \(a_{n_1}\) בקטע \((L-1,L+1)\). אחרי שנבחרו \(n_1\lt\dots\lt n_{k-1}\), בקטע \((L-\frac1k,L+\frac1k)\) יש <b>אינסוף</b> איברים, ולכן יש אחד עם אינדקס \(n_k>n_{k-1}\). מקבלים \(|a_{n_k}-L|\lt\frac1k\), ומסנדוויץ׳ \(a_{n_k}\to L\).</p>
+<p><b>שתי נקודות שהבודקים מחפשים:</b> (1) לכתוב במפורש שבוחרים אינדקס גדול מהקודם, אחרת זו לא תת-סדרה; (2) לנמק <i>למה</i> יש אינסוף איברים (מהנתון, או מאפיון ג״ח/sup). שימושים: אביב ע״ו 1ב, אביב ע״ז 1א, חורף פ״ב 1א, אביב ע״ט 1ב ו-2, אביב פ״א 2א, חורף פ׳ 1ב, אודיסאה 2ג.</p></div>
+
+<div class="tech"><h4>T2. שלילה, "אינסוף איברים מחוץ לסביבה", ואז BW <span class="chip rep">חוזר ×7</span></h4>
+<p>כדי להוכיח \(a_n\to L\) כשהסדרה חסומה: נניח בשלילה. אז קיים \(\varepsilon_0\) שמחוץ ל-\((L-\varepsilon_0,L+\varepsilon_0)\) יש אינסוף איברים. הם יוצרים תת-סדרה חסומה, ולפי BW יש לה תת-תת-סדרה מתכנסת לגבול \(M\) עם \(|M-L|\ge\varepsilon_0\) (משימור אי-שוויון חלש). זה ג״ח של הסדרה המקורית ששונה מ-L, בסתירה לנתון.</p>
+<p>שימושים: חורף פ״ו 2ב, אביב ע״ה 2, חורף ע״ו 2ב, אביב ע״ט 1ב (דרך ב׳), חורף ע״ח 1א.</p></div>
+
+<div class="tech"><h4>T3. אפיון גבול חלקי: L ג״ח ⇔ לכל ε>0 יש אינסוף איברים ב-\((L-\varepsilon,L+\varepsilon)\) <span class="chip rep">חוזר ×8</span></h4>
+<p>זה הגשר בין ה"סיפור" (תת-סדרה) לבין הכמתים. בכיוון ⇐ משתמשים ב-T1. בכיוון ⇒ מהגדרת הגבול של תת-הסדרה. כדי לשלול ג״ח: "קיים ε שבסביבה יש רק מספר סופי של איברים".</p></div>
+
+<div class="tech"><h4>T4. ε/2 ו-\(N=\max\{N_1,N_2,\dots\}\) <span class="chip rep">חוזר ×6</span></h4>
+<p>בכל הוכחה מההגדרה עם שתי סדרות: לוקחים \(N_1\) מהראשונה, \(N_2\) מהשנייה, ו-\(N=\max\). בגבול של מנה (אביב פ׳ 1) צריך שלושה N. בשאלת ה-max (אביב פ״ה 3, אודיסאה 3) מפרידים למקרים \(a=b\) ו-\(a\lt b\). במקרה \(a\lt b\) לוקחים \(\varepsilon_0=\frac{b-a}{2}\) כדי להראות שהחל ממקום מסוים \(\max\{a_n,b_n\}=b_n\).</p></div>
+
+<div class="tech"><h4>T5. "שימור סימן": מכנה מתרחק מאפס <span class="chip rep">חוזר ×5</span></h4>
+<p>אם \(b_n\to K\ne0\), ניקח \(\varepsilon=\frac{|K|}{2}\). החל ממקום מסוים \(|b_n|>\frac{|K|}{2}\), ולכן \(\frac1{|b_n|}\lt\frac2{|K|}\). זה סעיף 1ב בחורף פ״ו (\(b_n>K/2\)), השלב הראשון בגבול של מנה ובגבול של \(1/a_n\) (חורף פ״ו 1ג), וגם "liminf>0 ⇐ החל ממקום מסוים \(b_n>K\)" (חורף ע״ז 1א).</p></div>
+
+<div class="tech"><h4>T6. אפיון sup עם ε <span class="chip rep">חוזר ×8</span></h4>
+<p>\(M=\sup A\) ⇔ (1) \(\forall x\in A:\ x\le M\), וגם (2) \(\forall\varepsilon>0\ \exists x\in A:\ x>M-\varepsilon\). כדי לבנות סדרה ב-A שמתכנסת ל-sup לוקחים \(\varepsilon=\frac1n\) (אודיסאה 2ג). אם ה-sup לא מתקבל, אפשר לבחור את האיברים <i>שונים</i> ולבנות סדרה עולה ממש (אביב ע״ט 2, אודיסאה 2ד). "S+ε אינו חסם מלעיל" ו"L+ε אינו חסם מלרע של inf" הם אותו מהלך, ובו מתחילה הוכחת מונוטונית-חסומה.</p></div>
+
+<div class="tech"><h4>T7. סדרת נסיגה בשלושה צעדים <span class="chip rep">חוזר ×4</span></h4>
+<ol>
+<li><b>מוצאים את הגבול המועמד:</b> אם \(a_n\to L\) אז גם \(a_{n+1}\to L\), ולכן \(L=f(L)\). פותרים, ופוסלים שורש שלילי לפי חיוביות.</li>
+<li><b>חסימות באינדוקציה:</b> מראים \(a_n\le L\) (או \(\ge L\)). בנסיגת "ממוצע" כמו \(\frac12(a_n+\frac2{a_n})\) משתמשים ב-AM-GM: \(\frac12(a+\frac2a)\ge\sqrt{a\cdot\frac2a}=\sqrt2\).</li>
+<li><b>מונוטוניות:</b> מחשבים \(a_{n+1}-a_n\) ומשתמשים בחסם (למשל \(\frac{3(1+a)}{3+a}-a=\frac{3-a^2}{3+a}\ge0\) כש-\(0\lt a\le\sqrt3\)). מונוטונית וחסומה ⇐ מתכנסת, ומצעד 1 הגבול הוא L.</li>
+</ol>
+<p><b>מלכודת:</b> צעד 1 לבד לא מוכיח כלום, כי הוא מניח שהגבול קיים. צריך לכתוב "אם הסדרה מתכנסת אז הגבול חייב לקיים...".</p></div>
+
+<div class="tech"><h4>T8. מבחן המנה והשורש, והחלפה ביניהם <span class="chip rep">חוזר ×11</span></h4>
+<p>במכפלות, עצרות וחזקות n מחשבים \(\frac{a_{n+1}}{a_n}\). התבנית שחוזרת היא \(\frac{(n+1)^n}{n^n}=(1+\frac1n)^n\to e\). לכן \(\frac{x^n n!}{n^n}\): המנה \(\to\frac{x}{e}\). משפט "מנה ⇐ שורש" נותן מיד \(\sqrt[n]{n!}/n\to\frac1e\) ו-\(\sqrt[n]{\frac{n^{kn}}{(kn)!}}\to\frac{e^k}{k^k}\). מבחן השורש נוח כשיש \((\dots)^n\) או \((\dots)^{n^2}\).</p></div>
+
+<div class="tech"><h4>T9. סנדוויץ׳ עם המחובר הדומיננטי, ופיצול זוגי/אי-זוגי</h4>
+<p>\(\sqrt[n]{a^n+b^n}\to\max\{a,b\}\): חוסמים \(\max\le\sqrt[n]{\cdot}\le\sqrt[n]{2}\max\). כך נפתרו אביב ע״ה 3א (\((3+\frac1n)^n\pm\)), חורף ע״ה 2ג (\(\sqrt[n]{e^n+(1+\frac1n)^{n^2}}\to e\)), חורף ע״ז 2ב (\(\sqrt[n]{1^n+\dots+n^n}\) בין \(n\) ל-\(n\sqrt[n]{n}\)) ואביב ע״ז III. עם \((-1)^n\) מסתכלים על תת-סדרת הזוגיים ועל תת-סדרת האי-זוגיים בנפרד.</p></div>
+
+<div class="tech"><h4>T10. כפל בצמוד, טלסקופ, ערך שלם</h4>
+<p>\(\sqrt{A}-\sqrt{B}=\frac{A-B}{\sqrt A+\sqrt B}\) (אביב פ״ג 1ג, חורף ע״ה 2ב). טלסקופ: \(\frac1{\sqrt{2k-1}+\sqrt{2k+1}}=\frac{\sqrt{2k+1}-\sqrt{2k-1}}{2}\) (אודיסאה 1ג). ערך שלם: אם \(a_n\to c\) ו-\(c\) לא שלם, אז החל ממקום מסוים \(\lfloor a_n\rfloor=\lfloor c\rfloor\) (אביב פ״ג 1ג: \(\to 3/2\), ולכן \(\lfloor\cdot\rfloor\to1\)).</p></div>
+
+<div class="tech"><h4>T11. קושי דרך סכום הנדסי</h4>
+<p>\(|a_{n+p}-a_n|\le\sum_{k=n+1}^{n+p}|\cdot|\le\sum q^k\lt\frac{q^{n+1}}{1-q}\to0\). כך נפתרו \(\sum\frac{\cos k}{3^k}\) (אביב ע״ח 2ב), \(|a_{n+1}-a_n|\le q^n\) (אביב פ״ג 2ב) וחסימות \(\sum\frac{1}{(1+1/k)^{k^2}}\le\sum\frac1{2^k}\) (חורף פ״א 1ג).</p></div>
+
+<div class="tech"><h4>T12. ניסוח שלילה בכמתים</h4>
+<p>הופכים כל \(\forall\leftrightarrow\exists\) ושוללים את התנאי בסוף: "לא \(a_n\to L\)" ⇔ \(\exists\varepsilon_0>0\ \forall N\ \exists n>N:\ |a_n-L|\ge\varepsilon_0\) ⇔ "קיימת סביבה שמחוץ לה יש אינסוף איברים". זה בדיוק מה שנשאל בחורף פ״ו 2א, אביב ע״ט 1א ושאלות ההתאמה.</p></div>
+
+<!-- ===================== THEOREMS ===================== -->
+<h2 id="thm">3. רשימת המשפטים</h2>
+<p>הסדר עוקב אחרי הסדר בדף שלך. משפטים שלא היו בסיכום שבניתי מהבחנים ונוספו מהדף שלך מסומנים <span class="chip add">מהדף שלך</span>. כל מה שמסומן <span class="chip rep">חוזר</span> צריך להיות אצלך מילה במילה, כולל התנאים.</p>
+
+<h3 id="t-basic">א. יסודות, ערך מוחלט, sup ו-inf</h3>
+
+<div class="thm"><div class="name"><b>הבינום של ניוטון</b><span class="chip add">מהדף שלך</span></div>
+\(\binom nk=\frac{n!}{k!(n-k)!}\), \(0!=1\), ו-\((a+b)^n=\sum_{k=0}^n\binom nk a^kb^{n-k}\). בשימוש בבחנים: \(\binom{2n}{n}\) באביב ע״ט 3ג (\(\sqrt[n]{\binom{2n}n}\to4\)).</div>
+
+<div class="thm r"><div class="name"><b>אי-שוויון ברנולי</b><span class="chip rep">חוזר ×2</span></div>
+לכל \(n\in\mathbb N\) ולכל \(\alpha>-1\): \((1+\alpha)^n\ge1+n\alpha\). שימוש קלאסי: \((1+\frac1n)^n\ge2\), ולכן \((1+\frac1n)^{n^2}\ge2^n\) (חורף פ״א 1ב-ג).</div>
+
+<div class="thm"><div class="name"><b>זוגיות של \(n^2\)</b><span class="chip add">מהדף שלך</span></div>
+\(n\) זוגי ⇔ \(n^2\) זוגי. משמש בהוכחה ש-\(\sqrt2\notin\mathbb Q\).</div>
+
+<div class="thm"><div class="name"><b>צפיפות הרציונליים והאי-רציונליים</b><span class="chip add">מהדף שלך</span></div>
+לכל \(x\lt y\) ממשיים קיים \(q\in\mathbb Q\) וקיים \(r\in\mathbb R\setminus\mathbb Q\) עם \(x\lt q\lt y\) ו-\(x\lt r\lt y\). שימושי לדוגמאות: "סדרה שכל ממשי הוא ג״ח שלה" (מנייה של \(\mathbb Q\)).</div>
+
+<div class="thm r"><div class="name"><b>ערך מוחלט ותכונותיו</b><span class="chip rep">חוזר בכל הוכחת ε</span></div>
+\(|x|=\max\{x,-x\}\), המרחק מהראשית. לכל \(x,y\):
+\(|x|\ge0\); \(\ \pm x\le|x|\); \(\ |x|=|-x|\); \(\ |x|=0\Leftrightarrow x=0\); \(\ |xy|=|x||y|\);
+<b>אי-שוויון המשולש</b> \(|x+y|\le|x|+|y|\); <b>והפוך</b> \(\big||x|-|y|\big|\le|x-y|\);
+\(|x|\lt M\Leftrightarrow -M\lt x\lt M\); \(\ |x|>M\Leftrightarrow x>M\) או \(x\lt -M\).
+<span class="chip add">התכונות 1-5, 8-9 מהדף שלך</span></div>
+
+<div class="thm"><div class="name"><b>סביבה וסביבה מנוקבת</b><span class="chip add">מהדף שלך</span></div>
+\((x_0-\varepsilon,x_0+\varepsilon)\) היא סביבת ε של \(x_0\). מנוקבת: \(0\lt|x-x_0|\lt\varepsilon\).</div>
+
+<div class="thm r"><div class="name"><b>קבוצה חסומה; sup ו-inf (הגדרות)</b><span class="chip rep">חוזר ×8</span><span class="chip src">חורף פ״א 1א, חורף פ״ג 2א, אודיסאה 2א-ב</span></div>
+A חסומה מלעיל אם \(\exists M\in\mathbb R\ \forall x\in A:\ x\le M\) (M לא חייב להיות ב-A). A חסומה ⇔ \(\exists k\ge0\ \forall x\in A:\ |x|\le k\).
+\(\sup A\) הוא <b>החסם מלעיל הקטן ביותר</b>: חסם מלעיל, וכל חסם מלעיל k מקיים \(\sup A\le k\). inf סימטרי. אם \(\sup A\in A\) אז הוא \(\max A\), ואם \(\inf A\in A\) אז הוא \(\min A\).</div>
+
+<div class="thm r"><div class="name"><b>אפיון sup ו-inf עם ε</b><span class="chip rep">חוזר ×8</span><span class="chip heavy">כבד</span></div>
+\(M=\sup A\) ⇔ M חסם מלעיל וגם \(\forall\varepsilon>0\ \exists a_\varepsilon\in A:\ M-\varepsilon\lt a_\varepsilon\).<br>
+\(m=\inf A\) ⇔ m חסם מלרע וגם \(\forall\varepsilon>0\ \exists a_\varepsilon\in A:\ a_\varepsilon\lt m+\varepsilon\).
+<div class="explain">החלק הראשון אומר ש-M "מעל" כל A. החלק השני אומר שאי אפשר להוריד אותו אפילו קצת, כי \(M-\varepsilon\) כבר לא חסם. בבוחן זה הכלי לייצר איברים קרובים ל-sup: עם \(\varepsilon=\frac1n\) מקבלים סדרה \(a_n\in A\) עם \(M-\frac1n\lt a_n\le M\), ולכן \(a_n\to M\) (אודיסאה 2ג). שאלת ההתאמה באביב ע״ח בנויה כולה על הבחנה בין גרסאות שגויות של התנאי הזה. למשל "\(\forall\varepsilon\ \exists x>S+\varepsilon\)" פירושו "A לא חסומה מלעיל", ו"\(\forall\varepsilon>0\) אם \(x>S+\varepsilon\) אז \(x\notin A\)" פירושו "S חסם מלעיל".</div></div>
+
+<div class="thm r"><div class="name"><b>אקסיומת השלמות</b><span class="chip rep">חוזר ×5</span></div>
+לכל קבוצה לא ריקה וחסומה מלעיל ב-\(\mathbb R\) יש סופרימום ממשי, וכנ״ל inf לחסומה מלרע. (נכשל ב-\(\mathbb Q\).) צריך לצטט אותה בכל הוכחה של "מונוטונית וחסומה ⇐ מתכנסת".</div>
+
+<div class="thm"><div class="name"><b>קיום שורש n-י</b><span class="chip add">מהדף שלך</span></div>
+לכל \(x>0\) ולכל \(n\in\mathbb N\) קיים \(y>0\) יחיד עם \(y^n=x\).</div>
+
+<div class="thm r"><div class="name"><b>אי-שוויון הממוצעים AM-GM-HM</b><span class="chip rep">חוזר ×3</span></div>
+למספרים חיוביים \(a_1,\dots,a_n\): \(H_n\le G_n\le A_n\), כאשר \(A=\frac{a_1+\dots+a_n}{n}\), \(G=\sqrt[n]{a_1\cdots a_n}\), \(H=\frac{n}{\frac1{a_1}+\dots+\frac1{a_n}}\), ושוויון ⇔ כולם שווים. זה הרמז בשאלות הנסיגה (אביב ע״ו, אביב פ״א).</div>
+
+<div class="thm"><div class="name"><b>ערך שלם</b><span class="chip add">מהדף שלך</span></div>
+\(\lfloor x\rfloor\) הוא השלם הגדול ביותר שקטן או שווה ל-x, ו-\(x-1\lt\lfloor x\rfloor\le x\). בבחנים: אביב פ״ג 1ג, וחורף ע״ו 3ג (\(|a_n|\) מתכנסת לא גוררת ש-\(\lfloor a_n\rfloor\) מתכנסת: \((-1)^n\)).</div>
+
+<h3 id="t-lim">ב. גבול של סדרה</h3>
+
+<div class="thm r"><div class="name"><b>הגדרת הגבול</b><span class="chip rep">חוזר ×12</span><span class="chip src">חורף פ״ו 1א, אביב פ״ה 3א, אודיסאה 3א</span></div>
+\(\lim a_n=L\) אם \(\forall\varepsilon>0\ \exists N_0\ \forall n>N_0:\ |a_n-L|\lt\varepsilon\).
+ניסוח שקול: מחוץ לכל סביבה של L יש רק מספר סופי של איברים.<br>
+<b>שלילה</b> (חורף פ״ו 2א, אביב ע״ט 1א): \(\exists\varepsilon_0>0\ \forall N\ \exists n>N:\ |a_n-L|\ge\varepsilon_0\). כלומר <i>קיים</i> \(\varepsilon>0\) <i>כך שמחוץ לסביבה</i> \((L-\varepsilon,L+\varepsilon)\) <i>יש אינסוף איברים של</i> \(a_n\).
+<div class="explain">ε הוא "הדיוק שהיריב דורש", ו-N הוא "מאיזה מקום אתה מבטיח אותו". בהוכחה תמיד כותבים "יהי ε>0", מוצאים N שתלוי ב-ε, ומראים את אי-השוויון לכל n>N. בשאלת ההתאמה של חורף ע״ז: "קיים ε וקיים N כך ש-\(|a_n-L|\lt\varepsilon\)" פירושו "הסדרה חסומה", "לכל ε ולכל N ולכל n" פירושו "\(a_n=L\) לכל n>1", ו"לכל ε ולכל N קיים n>N" פירושו "L גבול חלקי". כדאי לתרגל את ההבחנות האלה.</div></div>
+
+<div class="thm"><div class="name"><b>דוגמאות בסיס</b></div>
+\(a_n=c\) לכל n ⇐ \(\lim a_n=c\). \(\ \lim\frac1n=0\) (ארכימדיות). בחורף ע״ט 2א ביקשו להוכיח \(\frac1{2^k}\to0\) לפי ההגדרה: \(N=\log_2\frac1\varepsilon\), או דרך \(2^k\ge k\).</div>
+
+<div class="thm r"><div class="name"><b>יחידות הגבול</b><span class="chip rep">חוזר ×6</span></div>
+אם לסדרה יש גבול, הוא יחיד. מצטטים אותו כשמראים ששני ביטויים לאותו גבול שווים (אביב ע״ה 1א: \(a_{6k}\) היא תת-סדרה גם של \(a_{2k}\) וגם של \(a_{3k}\)).</div>
+
+<div class="thm r"><div class="name"><b>מתכנסת ⇐ חסומה</b><span class="chip rep">חוזר ×5</span></div>
+\(a_n\) חסומה ⇔ \(\exists k>0\ \forall n:\ |a_n|\le k\). כל סדרה מתכנסת חסומה (ε=1, ו-max על האיברים הראשונים). <b>מסקנה:</b> לא חסומה ⇐ מתבדרת.
+<div class="proof">עם ε=1 קיים N כך ש-\(|a_n|\lt|L|+1\) לכל n>N. נגדיר \(k=\max\{|a_1|,\dots,|a_N|,|L|+1\}\). (אותו טריק באביב פ״ה 2ב1.)</div></div>
+
+<div class="thm r"><div class="name"><b>אריתמטיקה של גבולות</b><span class="chip rep">חוזר ×10</span><span class="chip src">הוכחת המנה: אביב פ׳ 1</span></div>
+אם \(a_n\to L,\ b_n\to K\) אז \(ca_n\to cL\), \(a_n\pm b_n\to L\pm K\), \(a_nb_n\to LK\), ואם \(K\ne0\) ו-\(b_n\ne0\) לכל n, אז \(\frac{a_n}{b_n}\to\frac LK\).</div>
+
+<div class="thm"><div class="name"><b>משפטי עזר</b></div>
+(1) \(a_n\to L\ \Rightarrow\ |a_n|\to|L|\) (מאי-שוויון המשולש ההפוך). (2) \(a_n\to0\Leftrightarrow|a_n|\to0\). (3) אם \(a_n\ge0\) ו-\(a_n\to L\) אז \(\sqrt{a_n}\to\sqrt L\).</div>
+
+<div class="thm r"><div class="name"><b>חסומה כפול שואפת לאפס</b><span class="chip rep">חוזר ×5</span></div>
+אם \(b_n\) חסומה ו-\(a_n\to0\) אז \(a_nb_n\to0\). זה מה שהורג את \(\sin(e^{n!})\), \(\cos\) ו-\((-1)^n\) (חורף ע״ז 2א, אודיסאה 1ב, אביב ע״ח 1).</div>
+
+<div class="thm r"><div class="name"><b>משפט הסנדוויץ׳</b><span class="chip rep">חוזר ×9</span></div>
+אם החל ממקום מסוים \(a_n\le b_n\le c_n\) ו-\(a_n\to L,\ c_n\to L\), אז \(b_n\to L\). זה המשפט שמסיים את T1 ואת T9.</div>
+
+<div class="thm r"><div class="name"><b>למה: גבול חיובי ⇐ החל ממקום מסוים מעל קבוע</b><span class="chip rep">חוזר ×4</span><span class="chip src">חורף פ״ו 1ב</span></div>
+אם \(a_n\to L>0\), אז קיימים \(k>0\) ו-\(N_0\) כך ש-\(a_n>k\) לכל \(n>N_0\) (למשל \(k=L/2\)).</div>
+
+<div class="thm r"><div class="name"><b>סדר גבולות (שימור אי-שוויון חלש)</b><span class="chip rep">חוזר ×6</span></div>
+אם \(a_n\to L,\ b_n\to K\) ו-\(a_n\ge b_n\) לכל n (או החל ממקום מסוים), אז \(L\ge K\). <b>זהירות:</b> \(a_n>b_n\) נותן רק \(L\ge K\) (למשל \(\frac1n>0\)). מסקנה: \(a_n\ge0\ \Rightarrow\ L\ge0\). חורף פ״ב 2 הוא גרסת ε של זה: \(a_n\lt b_n+\varepsilon\) החל ממקום מסוים ⇐ \(M\le L\).</div>
+
+<div class="thm"><div class="name"><b>גבול סדרת הממוצעים החשבוניים (צ׳זרו)</b><span class="chip add">מהדף שלך</span><span class="chip heavy">כבד</span></div>
+אם \(a_n\to L\) אז \(x_n=\frac{a_1+\dots+a_n}{n}\to L\).
+<div class="explain">האינטואיציה: אחרי N האיברים הראשונים כל האיברים קרובים ל-L, והאיברים ה"רעים" הם מספר סופי שמתחלק ב-n ההולך וגדל. בהוכחה מפצלים את הסכום ל-\(\frac{1}{n}\sum_{k\le N}|a_k-L|\) (קבוע חלקי n, שואף ל-0) ול-\(\frac1n\sum_{k>N}|a_k-L|\lt\varepsilon\). הכיוון ההפוך לא נכון: \((-1)^n\) לא מתכנסת, אבל הממוצעים שלה שואפים ל-0. לא נשאל עד היום בבוחן אמצע.</div></div>
+
+<div class="thm"><div class="name"><b>ממוצע הרמוני והנדסי</b><span class="chip add">מהדף שלך</span></div>
+אם \(a_n>0\) ו-\(a_n\to L\) אז \(\frac{n}{\frac1{a_1}+\dots+\frac1{a_n}}\to L\) ו-\(\sqrt[n]{a_1\cdots a_n}\to L\). מסדר גבולות \(L\ge0\).</div>
+
+<h3 id="t-calc">ג. כלי חישוב: מנה, שורש, e, אינסוף</h3>
+
+<div class="thm r"><div class="name"><b>מנה ⇐ שורש</b><span class="chip rep">חוזר ×7</span><span class="chip heavy">כבד</span></div>
+תהי \(a_n>0\). אם \(\frac{a_{n+1}}{a_n}\to L\) אז \(\sqrt[n]{a_n}\to L\).
+<div class="explain">אם המנה בין איברים עוקבים מתייצבת סביב L, אז \(a_n\) מתנהגת בערך כמו \(C\cdot L^n\), ולכן \(\sqrt[n]{a_n}\approx\sqrt[n]C\cdot L\to L\). (ההוכחה: \(a_n=a_1\prod\frac{a_{k+1}}{a_k}\) ומשתמשים בגבול הממוצע ההנדסי.) לכן כשיש \(\sqrt[n]{\text{עצרת}}\), מחשבים מנה במקום שורש. התוצאות שחוזרות: \(\sqrt[n]{n!}/n=\sqrt[n]{n!/n^n}\to\frac1e\); \(\ \sqrt[n]{\frac{n^{n-1}}{n!}}\to e\) (אביב ע״ה 3ב); \(\ \sqrt[n]{\binom{2n}{n}}\to4\); \(\ \sqrt[n]{\frac{n^{kn}}{(kn)!}}\to\frac{e^k}{k^k}\). הכיוון ההפוך לא נכון (חורף ע״ה 3ב: \(a_n=2^{(-1)^n}\)), ובשביל זה הייתה שאלת הפרכה.</div></div>
+
+<div class="thm r"><div class="name"><b>גבולות ידועים</b><span class="chip rep">חוזר ×10</span></div>
+\(\sqrt[n]{c}\to1\) לכל \(c>0\); \(\ \sqrt[n]{n}\to1\); \(\ q^n\to0\) כש-\(|q|\lt1\); \(\ c^n\to\infty\) כש-\(c>1\); \(\ (1+\frac1n)^n\to e\), והסדרה עולה וחסומה מלעיל.</div>
+
+<div class="thm r"><div class="name"><b>גבול במובן הרחב</b><span class="chip rep">חוזר ×6</span></div>
+\(a_n\to\infty\) אם \(\forall M>0\ \exists N_0\ \forall n>N_0:\ a_n>M\), ו-\(a_n\to-\infty\) אם \(a_n\lt -M\). "מתכנסת במובן הרחב" אם הגבול סופי או \(\pm\infty\). שימוש: אביב פ״ה 2א (∞ ג״ח ⇐ לא חסומה מלעיל).</div>
+
+<div class="thm r"><div class="name"><b>אריתמטיקה במובן הרחב</b><span class="chip rep">חוזר ×5</span></div>
+אם \(a_n,b_n\to\infty\): \(a_n+b_n\to\infty\), \(a_nb_n\to\infty\); \(ca_n\to\infty\) (c>0), \(\to-\infty\) (c&lt;0), ו-0 כש-c=0. אם \(a_n\to\infty\) ו-\(b_n\) חסומה מלרע על ידי קבוע חיובי, אז \(a_nb_n\to\infty\) (חורף ע״ז 1ב). <b>לא מוגדרים:</b> \(\infty-\infty,\ 0\cdot\infty,\ 1^\infty\).</div>
+
+<div class="thm"><div class="name"><b>הפיכה</b></div>
+\(a_n\to\infty\ \Rightarrow\ \frac1{a_n}\to0\). אם \(a_n>0\) ו-\(a_n\to0\) אז \(\frac1{a_n}\to\infty\). חוזר באביב ע״ט 1ב ובאביב ע״ח 1.</div>
+
+<div class="thm r"><div class="name"><b>משפט הפיצה (השוואה לאינסוף)</b><span class="chip rep">חוזר ×3</span></div>
+אם \(a_n\le b_n\) לכל n (או החל ממקום מסוים) ו-\(a_n\to\infty\), אז \(b_n\to\infty\). ובאופן סימטרי: \(b_n\to-\infty\ \Rightarrow\ a_n\to-\infty\). דוגמה: \(\sum_{k=1}^n\frac1{\sqrt k}\ge\frac{n}{\sqrt n}=\sqrt n\to\infty\) (אביב ע״ה 3ג).</div>
+
+<div class="thm r"><div class="name"><b>מבחן השורש ומבחן המנה לסדרות</b><span class="chip rep">חוזר ×11</span><span class="chip heavy">כבד</span></div>
+תהי \(a_n>0\), ונניח ש-\(q=\lim\sqrt[n]{a_n}\) (או \(q=\lim\frac{a_{n+1}}{a_n}\)) קיים. אם \(0\le q\lt1\) אז \(a_n\to0\). אם \(q>1\) אז \(a_n\to\infty\). אם \(q=1\) המבחן לא מכריע.
+<div class="explain">החל ממקום מסוים \(a_{n+1}\le r\cdot a_n\) עם \(r\lt1\) קבוע, ולכן הסדרה קטנה לפחות כמו סדרה הנדסית. q=1 הוא "חור" שבוחנים: \(\frac1n\to0\), \(1\to1\), \(n\to\infty\), כולן עם q=1. בחורף ע״ו 3ב הדוגמה הנגדית היא \(n^2\): שואפת ל-∞ אבל המנה שואפת ל-1, לא ל-q>1. כשהסדרה מתחלפת בסימן (למשל \((-3)^n n!/n^n\)) מפעילים את המבחן על \(|a_n|\). בשאלות "ג׳ורג׳י" כדאי לחשב קודם את המנה, ואז משפט מנה ⇐ שורש נותן את השורש בחינם.</div></div>
+
+<div class="thm r"><div class="name"><b>גבולות מסוג e</b><span class="chip rep">חוזר ×6</span></div>
+אם \(|a_n|\to\infty\) אז \((1+\frac1{a_n})^{a_n}\to e\), ולכל \(x\in\mathbb R\): \((1+\frac x{a_n})^{a_n}\to e^x\). אם \(a_n\to a>0\) ו-\(b_n\to b\) אז \(a_n^{b_n}\to a^b\).<br>
+דוגמאות מהבחנים: \(\left(\frac{n+2}{n+5}\right)^n\to e^{-3}\) (אביב פ״ג); \(\left(\frac{n+c}{n-c}\right)^n\to e^{2c}=4\Rightarrow c=\ln2\) (חורף ע״ח); \(\frac{(n+5)^n-(n-3)^n}{n^n+2^n}\to e^5-e^{-3}\) (אודיסאה).</div>
+
+<h3 id="t-mono">ד. סדרות מונוטוניות והלמה של קנטור</h3>
+
+<div class="thm"><div class="name"><b>הגדרה</b></div>
+עולה ממש \(a_n\lt a_{n+1}\), עולה \(a_n\le a_{n+1}\), יורדת ממש, יורדת. אם עולה ו-\(m>n\) אז \(a_m\ge a_n\). בטבלה של אביב ע״ו נאמר ש"עולה" עבור סדרה שעולה ממש נחשב תשובה שגויה.</div>
+
+<div class="thm r"><div class="name"><b>מונוטונית וחסומה ⇐ מתכנסת</b><span class="chip rep">חוזר ×5 כהוכחה, ×10 בשימוש</span><span class="chip heavy">כבד</span><span class="chip src">חורף ע״ה 4א, אביב ע״ו 2א, אביב פ״א 1א</span></div>
+עולה וחסומה מלעיל מתכנסת ל-sup שלה. יורדת וחסומה מלרע מתכנסת ל-inf שלה.
+<div class="explain">זה המשפט שהכי סביר שיבקשו ממך להוכיח מילה במילה. המהלך: L=inf קיים לפי אקסיומת השלמות. יהי ε>0. \(L+\varepsilon\) אינו חסם מלרע, ולכן קיים \(a_N\lt L+\varepsilon\). הסדרה יורדת, ולכן לכל \(n>N\): \(L-\varepsilon\lt L\le a_n\le a_N\lt L+\varepsilon\). ארבע שורות, וכל אחת מהן נבדקת: לצטט את אקסיומת השלמות, לכתוב למה \(L+\varepsilon\) לא חסם ("כי L הוא החסם מלרע הגדול ביותר"), להשתמש במונוטוניות, ולסגור עם הגדרת הגבול.</div></div>
+
+<div class="thm r"><div class="name"><b>מונוטונית מתכנסת במובן הרחב</b><span class="chip rep">חוזר ×3</span></div>
+כל סדרה מונוטונית מתכנסת במובן הרחב. עולה תמיד חסומה מלרע על ידי \(a_1\). עולה ולא חסומה \(\to\infty\), ויורדת ולא חסומה \(\to-\infty\). זה פותר את חורף ע״ח 1א: מונוטונית עם תת-סדרה מתכנסת היא חסומה (התת-סדרה "משגיחה" על כל האיברים), ולכן מתכנסת.</div>
+
+<div class="thm r"><div class="name"><b>הלמה של קנטור (קטעים סגורים מקוננים)</b><span class="chip rep">חוזר ×2</span><span class="chip heavy">כבד</span><span class="chip src">חורף ע״ט 1</span></div>
+אם \([a_{n+1},b_{n+1}]\subseteq[a_n,b_n]\) לכל n (כלומר \(a_n\le a_{n+1}\le b_{n+1}\le b_n\)) ו-\(b_n-a_n\to0\), אז קיימת נקודה c <b>יחידה</b> עם \(c\in[a_n,b_n]\) לכל n, ו-\(a_n,b_n\to c\).
+<div class="explain">\(a_n\) עולה וחסומה על ידי \(b_1\), ולכן מתכנסת. \(b_n\) יורדת וחסומה על ידי \(a_1\), ולכן מתכנסת. מאחר שההפרש שואף ל-0, שתיהן מתכנסות לאותו c. היחידות נובעת מכך שהאורך שואף ל-0. השימוש בבוחן: <b>[0,1] לא בת-מנייה</b>. מחלקים לשלושה קטעים סגורים, בוחרים קטע שלא מכיל את \(x_1\), מחלקים אותו לשלושה, בוחרים קטע שלא מכיל את \(x_2\), וכן הלאה. האורך הוא \(3^{-n}\to0\), ולכן קיים c בכל הקטעים. אבל \(c=x_m\) לאיזשהו m, ו-\(x_m\notin[a_m,b_m]\). סתירה. שים לב: הקטעים חייבים להיות סגורים, כי \(\bigcap(0,\frac1n)=\emptyset\).</div></div>
+
+<h3 id="t-sub">ה. תתי-סדרות, גבולות חלקיים, בולצאנו-ויירשטראס, limsup</h3>
+
+<div class="thm r"><div class="name"><b>תת-סדרה</b><span class="chip rep">חוזר ×15</span></div>
+\(\{a_{n_j}\}\) עם \(n_1\lt n_2\lt\dots\) טבעיים: לוקחים אינסוף איברים בלי לשנות סדר. <b>טענה:</b> \(n_j\ge j\) לכל j (באינדוקציה). משתמשים בה בכל "החל מ-\(j>N\) גם \(n_j>N\)" (אביב פ״ה 2ב).</div>
+
+<div class="thm r"><div class="name"><b>תת-סדרה של מתכנסת</b><span class="chip rep">חוזר ×8</span></div>
+אם \(a_n\to L\) (גם במובן הרחב), כל תת-סדרה שלה מתכנסת ל-L. <b>מסקנה:</b> אם יש שתי תתי-סדרות עם גבולות שונים, הסדרה לא מתכנסת. זה הכלי הסטנדרטי להוכיח שגבול לא קיים, למשל ל-\((-1)^n\).</div>
+
+<div class="thm r"><div class="name"><b>גבול חלקי (ג״ח)</b><span class="chip rep">חוזר ×15</span></div>
+L הוא ג״ח של \(a_n\) אם קיימת תת-סדרה \(a_{n_j}\to L\). ∞ ג״ח אם יש תת-סדרה ששואפת לאינסוף.</div>
+
+<div class="thm r"><div class="name"><b>אפיון ג״ח</b><span class="chip rep">חוזר ×8</span><span class="chip heavy">כבד</span><span class="chip src">אביב ע״ו 1</span></div>
+\(L\in\mathbb R\) ג״ח של \(a_n\) ⇔ לכל \(\varepsilon>0\) יש <b>אינסוף</b> איברים של הסדרה ב-\((L-\varepsilon,L+\varepsilon)\).<br>∞ ג״ח ⇔ הסדרה לא חסומה מלעיל.
+<div class="explain">"אינסוף איברים" פירושו אינסוף <i>אינדקסים</i>, לא אינסוף <i>ערכים</i>. בסדרה \(1,1,1,\dots\) יש אינסוף איברים ב-(1-ε,1+ε) אף על פי שיש רק ערך אחד. בכיוון ⇐ בונים תת-סדרה עם T1. בכיוון ⇒ החל מ-K מסוים כל \(a_{n_k}\) בסביבה, ויש אינסוף כאלה. זה המשפט שהופך שאלות על "סביבות" לשאלות על "תתי-סדרות". ההבדל בין "ג״ח" ל"גבול": בג״ח יש אינסוף איברים <i>בתוך</i> כל סביבה, ובגבול יש רק סופית <i>מחוץ</i> לכל סביבה.</div></div>
+
+<div class="thm r"><div class="name"><b>משפט בולצאנו-ויירשטראס (BW)</b><span class="chip rep">חוזר ×12</span><span class="chip heavy">כבד</span><span class="chip src">ניסוח: חורף פ״ב 2ב, אביב פ״ג 3א, חורף פ׳ 2ד</span></div>
+לכל סדרה חסומה <b>קיימת</b> תת-סדרה מתכנסת.<br>
+<b>מסקנות:</b> (1) לכל סדרה חסומה יש לפחות ג״ח אחד. (2) לכל סדרה יש תת-סדרה שמתכנסת במובן הרחב. (3) לכל סדרה יש ג״ח במובן הרחב. (4) סדרה מתכנסת במובן הרחב ⇔ יש לה ג״ח יחיד במובן הרחב. (5) לכל סדרה יש תת-סדרה מונוטונית.
+<div class="explain">BW הוא מה שמאפשר הוכחות בשלילה (T2): מקבלים אינסוף איברים "רעים", BW מוציא מהם תת-סדרה מתכנסת, והגבול שלה סותר משהו. דרך הוכחה אחת היא "מרתפים" (חורף פ׳ 2): איבר שכל מה שאחריו ≥ ממנו. אם יש אינסוף מרתפים, הם יוצרים תת-סדרה עולה. אם יש מספר סופי, אחרי המרתף האחרון לכל איבר יש איבר מאוחר יותר שקטן ממנו ממש, ובונים תת-סדרה יורדת ממש. בשני המקרים יש תת-סדרה מונוטונית, היא חסומה, ולכן מתכנסת. דרך שנייה היא חציה עם קנטור. מסקנה (4) מסבירה את חורף פ״ו 2ב: חסומה עם ג״ח יחיד ⇐ מתכנסת. <b>שים לב לחסימות:</b> לסדרה \(a_n=n\) באינדקסים זוגיים ו-\(a_n=0\) באי-זוגיים יש ג״ח סופי יחיד, 0, אבל היא לא מתכנסת, כי במובן הרחב יש לה גם ג״ח ∞.</div></div>
+
+<div class="thm r"><div class="name"><b>limsup ו-liminf (הגדרה)</b><span class="chip rep">חוזר ×10</span></div>
+לסדרה חסומה, \(\mathcal L\) = קבוצת הגבולות החלקיים. \(\overline{\lim}a_n=\limsup a_n=\sup\mathcal L\) ו-\(\underline{\lim}a_n=\liminf a_n=\inf\mathcal L\).</div>
+
+<div class="thm r"><div class="name"><b>limsup ו-liminf הם בעצמם ג״ח</b><span class="chip rep">חוזר ×6</span><span class="chip heavy">כבד</span></div>
+לסדרה חסומה, limsup ו-liminf הם ג״ח, כלומר ל-\(\mathcal L\) יש מקסימום ומינימום: limsup הוא הג״ח הגדול ביותר ו-liminf הקטן ביותר.<br>
+<b>מסקנה:</b> חסומה מתכנסת ⇔ \(\limsup=\liminf\).<br>
+<b>הערה:</b> אם \(\limsup a_n=a\) אז יש תת-סדרה \(a_{n_j}\to a\), וכל ג״ח b מקיים \(b\le a\).
+<div class="explain">הסיבה: קבוצת הג״ח סגורה (ג״ח של ג״ח הוא ג״ח, חורף פ״ג 1א). ה-sup של קבוצה סגורה וחסומה שייך לה. בבחנים זה מופיע כ"אם \(\limsup\lt1\)": זה ג״ח, ולכן יש תת-סדרה שמתקרבת אליו. עם \(\varepsilon=\frac{1-\limsup}{2}\) מקבלים \(a_n\lt A\lt1\) החל ממקום מסוים (חורף ע״ח 2ב). אבל \(a_n\lt1\) החל ממקום מסוים לא גורר \(\limsup\lt1\): \(1-\frac1n\) (חורף ע״ח 2א, הפרכה).</div></div>
+
+<div class="thm r"><div class="name"><b>אפיון limsup עם ε</b><span class="chip rep">חוזר ×4</span><span class="chip src">חורף פ״ג 1ב, אביב פ״ה 2ב</span></div>
+תהי \(a_n\) חסומה ו-\(H=\limsup a_n\). לכל \(\varepsilon>0\): (1) רק מספר <b>סופי</b> של איברים מקיימים \(a_n>H+\varepsilon\); (2) <b>אינסוף</b> איברים מקיימים \(a_n>H-\varepsilon\). ובאופן כללי: לכל ε>0, כל איברי הסדרה פרט למספר סופי נמצאים ב-\((\liminf-\varepsilon,\ \limsup+\varepsilon)\).
+<div class="proof">(1) נניח שיש אינסוף איברים מעל \(H+\varepsilon\). הם תת-סדרה חסומה, ולפי BW יש לה ג״ח \(\ge H+\varepsilon>H\), בסתירה למקסימליות של H. זה T2 בדיוק.</div></div>
+
+<div class="thm r"><div class="name"><b>אוסף הג״ח סגור</b><span class="chip rep">חוזר ×3</span><span class="chip src">חורף פ׳ 1ב, חורף פ״ג 1א</span></div>
+אם \(L_k\) ג״ח של \(a_n\) לכל k ו-\(L_k\to L\), אז L ג״ח.
+<div class="proof">יהי ε>0. קיים k עם \(|L_k-L|\lt\frac\varepsilon2\). מאפיון ג״ח יש אינסוף איברים ב-\((L_k-\frac\varepsilon2,L_k+\frac\varepsilon2)\subseteq(L-\varepsilon,L+\varepsilon)\), ולכן לפי האפיון L ג״ח.</div></div>
+
+<div class="thm r"><div class="name"><b>לכל סדרה (מתכנסת) יש תת-סדרה מונוטונית</b><span class="chip rep">חוזר ×3</span><span class="chip src">אביב פ״א 2א, חורף פ׳ 2</span></div>
+לסדרה מתכנסת ל-L: אם \(a_n=L\) החל ממקום מסוים, סיימנו. אחרת, נניח בה״כ שיש אינסוף איברים מעל L. בוחרים \(a_{n_1}>L\), ובכל צעד \(\varepsilon_k=a_{n_k}-L\) ואיבר מאוחר יותר ב-\((L,L+\varepsilon_k)\). מתקבלת תת-סדרה יורדת ממש.</div>
+
+<h3 id="t-cauchy">ו. סדרות קושי</h3>
+
+<div class="thm r"><div class="name"><b>הגדרת סדרת קושי</b><span class="chip rep">חוזר ×5</span><span class="chip src">אביב ע״ח 2א, אביב פ״ג 2א</span></div>
+\(\forall\varepsilon>0\ \exists N_0\ \forall m,n>N_0:\ |a_m-a_n|\lt\varepsilon\).<br>
+ניסוח שקול: \(\forall\varepsilon>0\ \exists N_0\ \forall n>N_0\ \forall p\in\mathbb N:\ |a_{n+p}-a_n|\lt\varepsilon\).</div>
+
+<div class="thm r"><div class="name"><b>קושי ⇐ חסומה; קושי ⇔ מתכנסת</b><span class="chip rep">חוזר ×5</span><span class="chip heavy">כבד</span></div>
+כל סדרת קושי חסומה, ו-\(a_n\) סדרת קושי ⇔ \(a_n\) מתכנסת (לגבול סופי).
+<div class="explain">היתרון: אפשר להוכיח התכנסות <i>בלי לדעת את הגבול</i>, כמו ב-\(\sum\frac{\cos k}{3^k}\) (T11). הכיוון ⇐ קל (\(\varepsilon/2\) ואי-שוויון המשולש). הכיוון ⇒: קושי ⇐ חסומה ⇐ (BW) יש תת-סדרה מתכנסת ל-L ⇐ קושי "מושך" את כל הסדרה ל-L. מלכודת הבחנים (אביב ע״ה 4א): \(a_{n+1}-a_n\to0\) <b>לא</b> מספיק. הדוגמה היא \(\sqrt n\), או הסדרה \(1,1\tfrac12,2,2\tfrac13,2\tfrac23,3,\dots\). דוגמה נוספת (חורף ע״ו 3ד): \(a_{2k}\) ו-\(a_{2k+1}\) שתיהן קושי, אבל \((-1)^n\) לא. בחורף פ״א 2 הנתון הוא \(|a_n-b_m|\lt\varepsilon\) לכל \(m,n>N\). מכאן \(|a_n-a_m|\le|a_n-b_k|+|b_k-a_m|\lt2\varepsilon\), ולכן שתיהן קושי, ומאותו אי-שוויון הגבולות שווים.</div></div>
+
+<h3 id="t-topo">ז. טופולוגיה של הישר והלמה של היינה-בורל</h3>
+
+<div class="thm"><div class="name"><b>נקודה פנימית</b><span class="chip add">מהדף שלך</span></div>
+\(x_0\in I\) פנימית אם קיים ε>0 עם \((x_0-\varepsilon,x_0+\varepsilon)\subseteq I\). בקטע פתוח כל נקודה פנימית. ב-\([a,b]\) הנקודות a ו-b לא פנימיות.</div>
+
+<div class="thm"><div class="name"><b>קטע סגור סגור תחת גבולות</b><span class="chip add">מהדף שלך</span></div>
+אם כל איברי סדרה מתכנסת נמצאים ב-\([a,b]\), גם הגבול שם (מסדר גבולות).</div>
+
+<div class="thm"><div class="name"><b>כיסוי, כיסוי פתוח, תת-כיסוי</b><span class="chip add">מהדף שלך</span></div>
+\(\Sigma\) (אוסף קטעים) מכסה את A אם לכל \(x\in A\) יש \(I\in\Sigma\) עם \(x\in I\). כיסוי פתוח: כל הקטעים פתוחים. סופי: מספר הקטעים סופי. \(\Sigma_1\subseteq\Sigma\) שמכסה את A הוא תת-כיסוי.</div>
+
+<div class="thm"><div class="name"><b>הלמה של היינה-בורל</b><span class="chip add">מהדף שלך</span><span class="chip heavy">כבד</span></div>
+לכל כיסוי פתוח של קטע סגור \([a,b]\) יש תת-כיסוי סופי.
+<div class="explain">זה ניסוח של קומפקטיות. ההוכחה הקלאסית בחציה: אם ל-\([a,b]\) אין תת-כיסוי סופי, לאחד החצאים גם אין. ממשיכים לחצות, ומקבלים קטעים מקוננים שאורכם שואף ל-0. לפי קנטור יש נקודה c בכולם. c מכוסה על ידי קטע פתוח אחד, וקטע זה מכיל את כל הקטעים הקטנים מספיק, וזו סתירה. הדוגמה שמראה שצריך "סגור": \((0,1)\) עם הכיסוי \(\{(\frac1n,1)\}\) אין תת-כיסוי סופי. ושצריך "פתוח": \([0,1]\) מכוסה על ידי הנקודות \(\{[x,x]:x\in[0,1]\}\), ואין לכיסוי הזה תת-כיסוי סופי. לא נשאל בבחני אמצע עד היום.</div></div>
+
+<h3 id="t-pow">ח. חזקות ממשיות</h3>
+
+<div class="thm"><div class="name"><b>חזקה רציונלית וממשית (הגדרה)</b><span class="chip add">מהדף שלך</span></div>
+לכל \(a>0\) ו-\(q=\frac mn\): \(a^q=(a^{1/n})^m\). לממשי x: בוחרים סדרת רציונליים מונוטונית \(x_n\to x\), ו-\(a^x=\lim a^{x_n}\). הגבול קיים (הסדרה מונוטונית וחסומה) ואינו תלוי בבחירת הסדרה.</div>
+
+<div class="thm"><div class="name"><b>חוקי חזקות ממשיות</b><span class="chip add">מהדף שלך</span></div>
+\(a^xa^y=a^{x+y}\); \(\ (a^x)^y=a^{xy}\); \(\ (ab)^x=a^xb^x\). אם \(b>a>0\): \(a^x\lt b^x\) כש-\(x>0\), ו-\(a^x>b^x\) כש-\(x\lt0\). אם \(x\lt y\): \(a^x\lt a^y\) כש-\(a>1\), ו-\(a^x>a^y\) כש-\(0\lt a\lt1\).<br>
+רציפות: \(x_n\to x\Rightarrow a^{x_n}\to a^x\); \(\ a_n\to a>0\Rightarrow a_n^x\to a^x\); \(\ x_n\to\infty\Rightarrow a^{x_n}\to\infty\) כש-\(a>1\) ו-\(\to0\) כש-\(0\lt a\lt1\) (ובאופן דומה ל-\(-\infty\)); \(\ \varepsilon_n\to0\) רציונליים \(\Rightarrow a^{\varepsilon_n}\to1\).</div>
+
+<div class="thm"><div class="name"><b>חזקות עם גבולות "בעייתיים"</b><span class="chip add">מהדף שלך</span></div>
+אם \(a_n>0,\ a_n\to0\) ו-\(b_n\to b>0\) אז \(a_n^{b_n}\to0\). אם \(a_n\to\infty,\ b_n\to b>0\) אז \(a_n^{b_n}\to\infty\). אם \(a_n\to a>1,\ b_n\to\infty\) אז \(a_n^{b_n}\to\infty\).</div>
+
+<!-- ===================== PROOFS ===================== -->
+<h2 id="proofs">4. הוכחות שנשאלו כ"הוכח את המשפט"</h2>
+<p>הרשימה לפי שכיחות. את הראשונות כדאי לכתוב פעם אחת על דף ריק בלי להציץ.</p>
+<ol>
+<li><b>מונוטונית יורדת/עולה וחסומה ⇐ מתכנסת</b> (×4: חורף ע״ה, אביב ע״ו, אביב פ״א, ובשימוש מפורש באביב פ״ה). ראה את ההסבר בסעיף ד.</li>
+<li><b>גבול של מנה / של \(1/a_n\) מההגדרה</b> (אביב פ׳ 1, חורף פ״ו 1ג):
+\[\left|\frac1{a_n}-\frac1L\right|=\frac{|a_n-L|}{|a_n||L|}\lt\frac{2}{|L|^2}|a_n-L|.\]
+קודם \(N_1\) עם \(\varepsilon=\frac{|L|}2\), כך ש-\(|a_n|>\frac{|L|}2\). אחר כך \(N_2\) עם \(|a_n-L|\lt\frac{|L|^2\varepsilon}{2}\), ולוקחים \(N=\max\). למנה הכללית: \(\frac{a_n}{b_n}-\frac LK=\frac{(a_n-L)K+L(K-b_n)}{b_nK}\).</li>
+<li><b>אפיון ג״ח בשני הכיוונים</b> (אביב ע״ו 1).</li>
+<li><b>BW דרך מרתפים</b> (חורף פ׳ 2) או <b>תת-סדרה מונוטונית לסדרה מתכנסת</b> (אביב פ״א 2).</li>
+<li><b>ג״ח יחיד + חסומה ⇐ מתכנסת</b> (חורף פ״ו 2ב), בשלילה ובעזרת BW (T2).</li>
+<li><b>אוסף הג״ח סגור</b> (חורף פ׳ 1ב, חורף פ״ג 1א).</li>
+<li><b>sup שלא מתקבל הוא ג״ח</b> (אביב ע״ט 2): לכל k, \(S-\frac1k\) אינו חסם, ומכיוון שאין מקסימום אפשר לבחור אינדקס גדול מהקודם (אחרת המקסימום של מספר סופי של איברים ו-\(S-\frac1k\) היה חסם קטן מ-S).</li>
+<li><b>[0,1] אינו בן-מנייה בעזרת קנטור</b> (חורף ע״ט 1ב).</li>
+<li><b>תתי-סדרות משותפות לשתי סדרות חסומות</b> (אביב פ״ג 3ב): BW על \(a_n\) נותן \(a_{m_j}\). אחר כך BW על \(b_{m_j}\) נותן \(b_{m_{j_k}}\). מכיוון ש-\(a_{m_{j_k}}\) תת-סדרה של מתכנסת, גם היא מתכנסת.</li>
+</ol>
+
+<!-- ===================== COUNTEREXAMPLES ===================== -->
+<h2 id="cex">5. בנק דוגמאות נגדיות</h2>
+<div class="tbl"><table>
+<thead><tr><th>סדרה</th><th>מה היא מפריכה</th></tr></thead>
+<tbody>
+<tr><td>\((-1)^n\)</td><td>חסומה ולא מתכנסת; \(|a_n|\) מתכנסת אבל \(a_n\) ו-\(\lfloor a_n\rfloor\) לא; \(a_{2k}\) ו-\(a_{2k+1}\) קושי אבל \(a_n\) לא</td></tr>
+<tr><td>\(1+\frac1n\) או \(1-\frac1n\)</td><td>\(a_n\lt1\) לכל n אבל \(\limsup=1\) (חורף ע״ח 2א); \(\sup\) לא מתקבל; \(a_n\in(1-\varepsilon,1+\varepsilon)\) לכל n לא אומר ש-1 ג״ח, כי אפשר לבחור ε גדול (חורף ע״ו 3ו)</td></tr>
+<tr><td>\((-1)^n(1+\frac1n)\) ו-\((-1)^n(1+\frac1n)^n\)</td><td>\(\limsup\ne\sup\) וגם \(\liminf\ne\inf\) (אביב פ׳ 3א). בשנייה sup=e ו-inf=−e, ואף אחד מהם לא מתקבל, ולכן אין max ואין min (אביב ע״ט 3ב)</td></tr>
+<tr><td>\(n\cdot\sin\frac{n\pi}2\) = \(1,0,-3,0,5,\dots\)</td><td>\(|a_n|\) לא חסומה, אבל אין גבול ±∞; יש ת״ס ל-∞ אבל \(\frac{a_n}{n}\) לא מתכנסת (חורף ע״ו 3א, 3ח)</td></tr>
+<tr><td>\(n^2\) או \(n\)</td><td>\(a_n\to\infty\) אבל \(\frac{a_{n+1}}{a_n}\to1\), כלומר לא q>1 (חורף ע״ו 3ב)</td></tr>
+<tr><td>\(1-\frac1n\)</td><td>\(0\le a_n\lt1\) לכל n, אבל \(a_n^n=(1-\frac1n)^n\to\frac1e\ne0\) (אביב פ׳ 3ד)</td></tr>
+<tr><td>\(\sqrt n\)</td><td>\(\frac{a_n}{n}\to0\) אבל \(a_n\) לא חסומה (אביב פ׳ 3ג)</td></tr>
+<tr><td>\(a_n=\sqrt n\) או \(1,1\tfrac12,2,2\tfrac13,2\tfrac23,3,\dots\)</td><td>\(a_{n+1}-a_n\to0\) אבל לא קושי (אביב ע״ה 4א)</td></tr>
+<tr><td>\(a_n=0\) אם \(2\mid n\) או \(3\mid n\), אחרת \(a_n=1\)</td><td>\(a_{2k},a_{3k}\to0\) אבל \(a_n\) לא מתכנסת (ראשוניים, אביב ע״ה 1ב)</td></tr>
+<tr><td>\(A=B=(0,1)\)</td><td>לכל a יש \(b>a\), אבל \(\sup A=\sup B\) (אביב ע״ה 4ב)</td></tr>
+<tr><td>\(2^{(-1)^n}\)</td><td>\(\sqrt[n]{a_n}\to1\) אבל המנה לא מתכנסת (חורף ע״ה 3ב)</td></tr>
+<tr><td>\(a_n=n,\ b_n=1\) (או \(a_n=1,b_n=n\))</td><td>\(\frac{a_n}{b_n}\to0\) ורק אחת חסומה (אביב ע״ח 1ב); \(a_n\to\infty\), \(\liminf b_n\ge0\), אבל \(a_n\cdot\frac1{n^2}\to0\) (חורף ע״ז 1ג עם \(b_n=\frac1{n^2}\))</td></tr>
+<tr><td>\(\frac{(-1)^n}{n}\)</td><td>מקיימת את התנאי "אינסוף איברים ב-(L−ε,L)" עם L=0, ויש לה תת-סדרה יורדת ממש (אביב ע״ז 1ב, חורף פ״ב 1ב)</td></tr>
+<tr><td>מנייה של \(\mathbb Q\cap[0,1]\)</td><td>אוסף הג״ח הוא כל [0,1]; ג״ח לא חייב להיות איבר בסדרה</td></tr>
+<tr><td>\(1,\ 1,\tfrac12,\ 1,\tfrac12,\tfrac13,\ \dots\)</td><td>אוסף הג״ח הוא \(\{\frac1k\}\cup\{0\}\), אינסוף ג״ח רציונליים (חורף פ״ו 2ג). עם סימנים ± מקבלים את חורף ע״ט 2ג</td></tr>
+<tr><td>\(a_1=100,\ a_n=\frac1n\); \(b_n=1+\frac1n\)</td><td>\(\limsup a\lt\limsup b\) אבל אין \(b_n>a_1\) (אביב ע״ה 4ג)</td></tr>
+<tr><td>\(a_1=0,\ a_n=\frac1n\) (n≥2)</td><td>"כל האיברים שונים ומתכנסת ל-L ⇐ \(a_n\ne L\)" לא נכון: \(a_1=0,\ a_n=\frac1n\) (חורף ע״ה 3א)</td></tr>
+</tbody></table></div>
+
+<!-- ===================== QUIZZES ===================== -->
+<h2 id="quizzes">6. כל 20 הבחנים עם פתרונות</h2>
+<p>הפתרונות כאן מקוצרים לשלד שמקבל ניקוד מלא. במקומות שהפתרון הרשמי משתמש במהלך מסעיף 2, מצוין שם המהלך. התשובות הסופיות נבדקו מול הפתרונות הרשמיים.</p>
+
+<div class="quiz"><h3>חורף תשע״ה <span class="chip src">12.12.2014 · 4 שאלות</span></h3>
+<p class="q">1. \(a_1=2,\ a_{n+1}=\frac{2+2a_n}{2+a_n}\). הוכח התכנסות ומצא גבול.</p>
+<p class="s">T7. גבול: \(L=\frac{2+2L}{2+L}\Rightarrow L^2=2\Rightarrow L=\sqrt2\) (חיובית). באינדוקציה \(a_n\ge\sqrt2\): \(a_{n+1}-\sqrt2=\frac{(2-\sqrt2)(a_n-\sqrt2)}{2+a_n}\ge0\). יורדת: \(a_{n+1}-a_n=\frac{2-a_n^2}{2+a_n}\le0\). מונוטונית וחסומה, ולכן \(\to\sqrt2\).</p>
+<p class="q">2. (א) \(\lim\frac{(-2)^nn!}{n^n}\) (ב) \(\lim(\sqrt{n^2+n}-n)^n\) (ג) \(\lim\sqrt[n]{e^n+(1+\frac1n)^{n^2}}\)</p>
+<p class="s">(א) מנה בערך מוחלט: \(\frac{2}{(1+1/n)^n}\to\frac2e\lt1\), ולכן 0. (ב) \(\sqrt{n^2+n}-n=\frac{n}{\sqrt{n^2+n}+n}\to\frac12\). לכן החל ממקום מסוים הבסיס קטן מ-\(\frac34\), והגבול 0 (סנדוויץ׳ עם \((3/4)^n\)). (ג) \((1+\frac1n)^{n^2}\le e^n\), ולכן \(e\le\sqrt[n]{\cdot}\le\sqrt[n]2\,e\), והגבול e.</p>
+<p class="q">3. הפרך: (א) איברים שונים ו-\(a_n\to L\) ⇐ \(a_n\ne L\). (ב) \(\sqrt[n]{a_n}\to L\) ⇐ \(\frac{a_{n+1}}{a_n}\to L\). (ג) A ג״ח של a ו-B ג״ח של b ⇐ AB ג״ח של \(a_nb_n\).</p>
+<p class="s">(א) \(a_1=0,\ a_n=\frac1n\) (n≥2). (ב) \(a_n=2^{(-1)^n}\): השורש \(\to1\), המנה מתחלפת בין 4 ל-\(\frac14\). (ג) \(a_n=(-1)^n,\ b_n=(-1)^{n+1}\): A=B=1 ג״ח, אבל \(a_nb_n\equiv-1\), ולכן 1 אינו ג״ח.</p>
+<p class="q">4. (א) הוכח: עולה וחסומה מלעיל ⇐ מתכנסת. (ב) \(b_n\) חסומה, ולכל m ולכל \(n\ge m^2\): \(b_n\ge b_m\). הוכח \(b_n\to\sup b_n\).</p>
+<p class="s">(א) המשפט, ראה סעיף ד. (ב) S=sup. יהי ε>0. קיים \(b_m>S-\varepsilon\) (אפיון sup). לכל \(n\ge m^2\): \(S-\varepsilon\lt b_m\le b_n\le S\). לכן \(N=m^2\) עובד.</p></div>
+
+<div class="quiz"><h3>אביב תשע״ה <span class="chip src">10.5.2015 · 4 שאלות</span></h3>
+<p class="q">1. (א) אם \(a_{2k}\) ו-\(a_{3k}\) מתכנסות, אז לאותו גבול. (ב) הוכח/הפרך: אם שתיהן \(\to L\) אז \(a_n\to L\).</p>
+<p class="s">(א) \(a_{6k}\) תת-סדרה של שתיהן, ומיחידות הגבול \(L_1=L_2\). (ב) הפרכה: \(a_n=0\) אם \(2|n\) או \(3|n\), אחרת 1. יש אינסוף ראשוניים, ולכן 1 ג״ח, ו-\(a_n\) לא מתכנסת.</p>
+<p class="q">2. \(a_n\) חסומה, וכל תת-סדרה מונוטונית שלה \(\to L\). הוכח \(a_n\to L\).</p>
+<p class="s">כל תת-סדרה מתכנסת \(a_{n_k}\) מכילה תת-סדרה מונוטונית, שמתכנסת ל-L לפי הנתון, ולכן \(a_{n_k}\to L\). לכן L הוא הג״ח היחיד של סדרה חסומה, והסדרה מתכנסת ל-L. (לחלופין T2.)</p>
+<p class="q">3. (א) \(\lim\sqrt[n]{(3+\frac1n)^n+(-1)^n}\) (ב) \(\lim\sqrt[n]{\frac{n^{n-1}}{n!}}\) (ג) \(\lim\sum_{k=1}^n\frac1{\sqrt k}\)</p>
+<p class="s">(א) 3, בסנדוויץ׳ בין \((3+\frac1n)\sqrt[n]{2/3}\) ל-\((3+\frac1n)\sqrt[n]2\) (כי \(\frac23x\le x\pm1\le2x\) כש-\(x\ge3\)). (ב) \(\frac{a_{n+1}}{a_n}=\frac{(n+1)^n}{(n+1)!}\cdot\frac{n!}{n^{n-1}}=\left(1+\frac1n\right)^{n-1}\to e\), ולכן לפי מנה ⇐ שורש הגבול e. (ג) \(\ge n\cdot\frac1{\sqrt n}=\sqrt n\to\infty\) (פיצה).</p>
+<p class="q">4. הפרך: (א) \(a_{n+1}-a_n\to0\) ⇐ קושי. (ב) A,B חסומות ולכל a קיים b>a ⇐ \(\sup A\lt\sup B\). (ג) \(\limsup a\lt\limsup b\) ⇐ לכל איבר של a יש איבר של b שגדול ממנו.</p>
+<p class="s">(א) \(1,1\tfrac12,2,2\tfrac13,2\tfrac23,3,\dots\) (או \(\sqrt n\)). (ב) \(A=B=(0,1)\). (ג) \(a_1=100,\ a_n=\frac1n\); \(b_n=1+\frac1n\).</p></div>
+
+<div class="quiz"><h3>חורף תשע״ו <span class="chip src">14.12.2015 · 3 שאלות</span></h3>
+<p class="q">1. (א) \(x_n\) חסומה, \(\liminf x_n=L\), ו-\(x_n\le L\) לכל n. הוכח \(x_n\to L\). (ב) \(0\le a_n,b_n\le1\) ו-\(\liminf a_nb_n=1\). הוכח \(a_n\to1\).</p>
+<p class="s">(א) כל ג״ח M מקיים \(M\le L\) (סדר גבולות, כי \(x_n\le L\)) וגם \(M\ge\liminf=L\). לכן הג״ח היחיד הוא L, ומסדרה חסומה נובעת התכנסות. (ב) \(a_nb_n\le1\) ו-\(\liminf=1\), ולכן לפי (א) \(a_nb_n\to1\). מ-\(a_nb_n\le a_n\le1\) ומסנדוויץ׳, \(a_n\to1\).</p>
+<p class="q">2. (א) סדרה מתכנסת: יש לה איבר מינימלי או מקסימלי. (ב) יש מינימום \(a_m\) ומקסימום \(a_M\), ולכל \(L\in(a_m,a_M]\) יש סביבה עם מספר סופי של איברים. הוכח \(a_n\to a_m\).</p>
+<p class="s">(א) אם \(a_n\equiv L\) סיימנו. אחרת יש איבר \(a_k\ne L\), נניח \(a_k>L\). עם \(\varepsilon=a_k-L\), רק מספר סופי של איברים \(\ge a_k\), ומביניהם יש מקסימום, והוא מקסימום של כל הסדרה. (ב) הסדרה חסומה בין \(a_m\) ל-\(a_M\), ולכן כל ג״ח ב-\([a_m,a_M]\). לפי הנתון ואפיון ג״ח אף נקודה ב-\((a_m,a_M]\) אינה ג״ח. לפי BW יש ג״ח, ולכן הוא \(a_m\) והוא יחיד. לכן \(a_n\to a_m\).</p>
+<p class="q">3. טבלת דוגמאות נגדיות מהסדרות (1) \((-1)^n\) (2) \(1+\frac1n\) (3) \(n^2\) (4) \(-1+\frac1n\) (5) \(\frac{3^nn!}{n^n}\) (6) \(n\sin\frac{n\pi}2\).</p>
+<p class="s">א-6, ב-3, ג-1, ד-1, ה-2, ו-4, ז-4, ח-6. (ה: \(\limsup(1+\frac1n)=1\) אבל \(\sup_{n>N}=1+\frac1{N+1}\ne1\). ז: \(a_n\lt\varepsilon\) החל ממקום מסוים אבל \(-1+\frac1n\to-1\).)</p></div>
+
+<div class="quiz"><h3>אביב תשע״ו <span class="chip src">19.4.2016 · 3 שאלות</span></h3>
+<p class="q">1. אפיון ג״ח: (א) ג״ח ⇐ לכל ε אינסוף איברים ב-\((L-\varepsilon,L+\varepsilon)\). (ב) הכיוון ההפוך.</p>
+<p class="s">(א) \(a_{n_k}\to L\): החל מ-K מסוים כל \(a_{n_k}\) בסביבה, ויש אינסוף כאלה. (ב) T1 עם \(\frac1k\) וסנדוויץ׳.</p>
+<p class="q">2. (א) יורדת וחסומה מלרע ⇐ מתכנסת. (ב) \(a_1=1,\ a_{n+1}=\frac12(a_n+\frac2{a_n})\).</p>
+<p class="s">(א) המשפט. (ב) גבול מועמד \(\sqrt2\). מ-AM-GM \(a_n\ge\sqrt2\) לכל \(n\ge2\). יורדת: \(a_{n+1}=\frac12(a_n+\frac2{a_n})\le\frac12(a_n+\frac{a_n^2}{a_n})=a_n\) כי \(\frac2{a_n}\le a_n\). לכן מתכנסת ל-\(\sqrt2\).</p>
+<p class="q">3. טבלה ל-\(\frac{x^nn!}{n^n}\) עם \(x=2,e,\pi,-3\): גבול המנה, האם שואפת ל-0, מונוטוניות.</p>
+<p class="s">המנה \(\to\frac xe\): \(\frac2e\), 1, \(\frac\pi e\), \(-\frac3e\). שואפת ל-0: כן, לא, לא, לא. מונוטוניות: יורדת (ממש רק מ-n=2), עולה ממש (\((1+\frac1n)^n\lt e\)), עולה ממש, לא מונוטונית.</p></div>
+
+<div class="quiz"><h3>חורף תשע״ז <span class="chip src">23.12.2016 · 3 שאלות</span></h3>
+<p class="q">1. (א) \(\liminf b_n>0\) ⇐ קיים K>0 עם \(b_n>K\) החל ממקום מסוים. (ב) \(a_n\to\infty\), \(b_n\) חסומה, \(\liminf b_n>0\) ⇐ \(a_nb_n\to\infty\). (ג) דוגמה עם \(\liminf b_n\ge0\) שבה המסקנה נכשלת.</p>
+<p class="s">(א) \(K=\frac{\liminf}2\). לפי אפיון liminf (הגרסה הסימטרית) רק מספר סופי של איברים מתחת ל-K. (ב) \(a_nb_n\ge Ka_n\to\infty\), ופיצה. (ג) \(a_n=n,\ b_n=\frac1{n^2}\): \(a_nb_n\to0\).</p>
+<p class="q">2. (א) \(\lim\frac{n!\sin(e^{\sqrt n})}{(n+1)^n}\) (ב) \(\lim\frac{\sqrt[n]{1^n+\dots+n^n}}{1+\dots+n}\)</p>
+<p class="s">(א) \(\frac{n!}{(n+1)^n}\to0\) (מבחן מנה: \(\to\frac1e\)), כפול חסומה, ולכן 0. (ב) המונה בין n ל-\(n\sqrt[n]n\), המכנה \(\frac{n(n+1)}2\), ולכן 0.</p>
+<p class="q">3. התאמת 8 תנאים לרשימה.</p>
+<p class="s">(א) \(\lim a_n=-\infty\). (ב) \(a_n\) מתכנסת (זה תנאי קושי). (ג) \(a_n\) חסומה ("קיים ε וקיים N" זה חלש מאוד). (ד) \(\lim a_n=L\). (ה) \(\inf a_n\le L\): לכל ε מספיק איבר <i>אחד</i> מתחת ל-\(L+\varepsilon\). (ו) \(a_n\) חסומה וגם \(\limsup a_n\le L\). (ז) \(a_n=L\) לכל n>1 ("לכל N" כולל N=1). (ח) L גבול חלקי של \(a_n\).</p>
+<div class="tip"><b>מלכודת בסעיף ו:</b> "\(L-1\lt a_n\lt L+\varepsilon\) החל ממקום מסוים" גורר "חסומה וגם \(\limsup\le L\)", אבל לא להפך: \(\limsup\le L\) לא מבטיח שהאיברים גדולים מ-\(L-1\). הפתרון הרשמי מעיר על כך במפורש.</div></div>
+
+<div class="quiz"><h3>אביב תשע״ז <span class="chip src">9.5.2017 · 3 שאלות</span></h3>
+<p class="q">1. (א) לכל ε יש אינסוף איברים ב-\((L-\varepsilon,L)\) ⇐ יש תת-סדרה עולה ממש. (ב) דוגמה שיש לה גם תת-סדרה יורדת ממש.</p>
+<p class="s">(א) \(x_{n_1}\in(L-1,L)\), ואז \(x_{n_k}\in(x_{n_{k-1}},L)\) עם \(\varepsilon=L-x_{n_{k-1}}\) ואינדקס גדול מהקודם. (ב) \(L=0,\ x_n=\frac{(-1)^n}{n}\): האי-זוגיים ב-\((-\varepsilon,0)\), והזוגיים \(\frac12,\frac14,\dots\) יורדים ממש.</p>
+<p class="q">2. \(b_n\) היא שינוי סדר של \(a_n\) החסומה. (א) \(a_n\to L\ \Rightarrow\ b_n\to L\). (ב) תת-סדרה עולה ממש של a ⇐ יש כזו ל-b.</p>
+<p class="s">(א) מחוץ ל-\((L-\varepsilon,L+\varepsilon)\) יש מספר סופי של איברי a, ולכן גם של b. ניקח N = האינדקס הגדול ביותר שלהם ב-b. (ב) תת-הסדרה העולה ממש חסומה, ולכן מתכנסת ל-L, וכל איבריה קטנים ממש מ-L. לכן התנאי של 1א מתקיים עבור a, הוא לא תלוי בסדר, ולכן מתקיים גם עבור b.</p>
+<p class="q">3. התאמה: I \(\frac{(n+1)^{n^2}}{2^nn^{n^2}}\), II \(\frac{(2n)!3^n}{n!(2n)^n}\), III \(\sqrt[n]{(\frac12)^n+(\frac13)^n}\).</p>
+<p class="s">(א) II, המנה \(\to\frac6e>1\), ולכן ∞. (ב) III, סנדוויץ׳ בין \(\frac12\) ל-\(\frac12\sqrt[n]2\), ולכן \(\frac12\). (ג) I, השורש \(=\frac{(1+\frac1n)^n}{2}\to\frac e2>1\), ולכן ∞.</p></div>
+
+<div class="quiz"><h3>חורף תשע״ח <span class="chip src">10.12.2017 · 3 שאלות</span></h3>
+<p class="q">1. הוכח/הפרך: (א) מונוטונית עם תת-סדרה מתכנסת לגבול סופי ⇐ מתכנסת. (ב) \(b_n\) לא חסומה מלעיל ו-\(b_{n_k}\) תת-סדרה מונוטונית ממש ⇐ \(b_{n_k}\to\infty\).</p>
+<p class="s">(א) נכון. בה״כ עולה: לכל n יש \(n_k\ge n\), ולכן \(a_n\le a_{n_k}\le L\) (תת-סדרה עולה שואפת ל-L מלמטה). לכן חסומה, ומונוטונית וחסומה מתכנסת. (ב) לא נכון: \(b_n=n\) באינדקסים זוגיים ו-\(b_n=-\frac1n\) באי-זוגיים. הסדרה לא חסומה מלעיל, ותת-הסדרה \(-1,-\frac13,-\frac15,\dots\) עולה ממש ומתכנסת ל-0.</p>
+<p class="q">2. הוכח/הפרך: (א) \(\limsup a_n\lt1\) ⇔ \(a_n\lt1\) החל ממקום מסוים. (ב) \(\limsup a_n\lt1\) ⇔ קיים \(A\lt1\) עם \(a_n\lt A\) החל ממקום מסוים.</p>
+<p class="s">(א) לא נכון: \(a_n=1-\frac1n\). (ב) נכון. ⇐: אם \(L=\limsup\), ניקח \(A=\frac{L+1}2\) ונשתמש באפיון limsup. ⇒: L ג״ח, ותת-סדרה שמתכנסת אליו מקיימת \(a_{n_k}\lt A\), ולכן \(L\le A\lt1\).</p>
+<p class="q">3. (א) \(\lim(\frac{n+c}{n-c})^n=4\), מצא c. (ב) \(a_n=\frac{n!(2n)^n}{(2n)!(3k)^n}\): לאן שואפת לפי k?</p>
+<p class="s">(א) \(\left(\frac{n+c}{n-c}\right)^n=\frac{(1+\frac cn)^n}{(1-\frac cn)^n}\to e^{2c}=4\Rightarrow c=\ln2\). (ב) \(\frac{a_{n+1}}{a_n}=\frac{n+1}{2n+1}\cdot\frac{(1+\frac1n)^n}{3k}\to\frac{e}{6k}\). לכן אם \(k\lt\frac e6\) אז \(a_n\to\infty\), ואם \(k>\frac e6\) אז \(a_n\to0\).</p></div>
+
+<div class="quiz"><h3>אביב תשע״ח <span class="chip src">23.5.2018 · 3 שאלות</span></h3>
+<p class="q">1. \(a_n,b_n>0\), \(\frac{a_n}{b_n}\to L\). (א) L>0: a חסומה ⇔ b חסומה. (ב) L=0: דוגמה נגדית.</p>
+<p class="s">(א) עם \(\varepsilon=\frac L2\): \(\frac L2b_n\lt a_n\lt\frac{3L}2b_n\) החל ממקום מסוים. משם חוסמים כל סדרה בעזרת השנייה, ולוקחים max עם האיברים הראשונים. (ב) \(a_n=1,\ b_n=n\).</p>
+<p class="q">2. (א) הגדר קושי. (ב) \(a_n=\sum_{k=1}^n\frac{\cos k}{3^k}\) מתכנסת לפי קושי.</p>
+<p class="s">(ב) T11: \(|a_{n+p}-a_n|\le\sum_{k=n+1}^{n+p}3^{-k}\lt\frac{1}{2\cdot3^n}\lt\varepsilon\) כאשר \(n>\log_3\frac1\varepsilon\).</p>
+<p class="q">3. התאמת 6 תנאים (sup, חסומה, וכו׳).</p>
+<p class="s">(א) \(S=\sup A\). (ב) A לא חסומה מלעיל. (ג) S חסם מלרע של A. (ד) A חסומה מלרע. (ה) S חסם מלעיל של A. (ו) \(S\ge\inf A\).</p></div>
+
+<div class="quiz"><h3>חורף תשע״ט <span class="chip src">11.12.2018 · 3 שאלות</span></h3>
+<p class="q">1. (א) נסח את הלמה של קנטור. (ב) הוכח בעזרתה ש-[0,1] אינו סדרה.</p>
+<p class="s">ראה את ההסבר בסעיף ד. בכל שלב בוחרים שליש סגור שלא מכיל את \(x_n\). מקבלים קטעים מקוננים באורך \(3^{-n}\), ונקודה c בכולם שאינה אף \(x_m\).</p>
+<p class="q">2. (א) \(\frac1{2^k}\to0\) לפי ההגדרה. (ב) כל \(\pm\frac1{2^k}\) ג״ח ⇐ 0 ג״ח? (ג) דוגמה שהג״ח שלה הם בדיוק \(\{0\}\cup\{\pm\frac1{2^k}\}\).</p>
+<p class="s">(א) \(2^k>k\), ולכן עם \(N=\lceil\frac1\varepsilon\rceil\). (ב) כן, כי אוסף הג״ח סגור, ו-\(\frac1{2^k}\to0\) כשכל אחד מהם ג״ח. (ג) לסירוגין: \(\frac12,-\frac12,\ \frac12,-\frac12,\frac14,-\frac14,\ \dots\) (בבלוק k מופיעים \(\pm\frac1{2^j}\) לכל \(j\le k\)). כל \(\pm\frac1{2^j}\) מופיע אינסוף פעמים, 0 ג״ח לפי (ב), ואין אחרים.</p>
+<p class="q">3. (א) \(\lim\frac2n\sqrt[n]{n!}\) (ב) \(a_n=(-1)^n(\frac3e+\frac4{n^2})\): sup, inf, limsup, liminf.</p>
+<p class="s">(א) \(\frac2e\). (ב) sup \(=\frac3e+1\) (n=2), inf \(=-\frac3e-4\) (n=1), limsup \(=\frac3e\), liminf \(=-\frac3e\).</p></div>
+
+<div class="quiz"><h3>אביב תשע״ט <span class="chip src">20.5.2019 · 3 שאלות</span></h3>
+<p class="q">1. (א) נסח "לא \(\lim a_n=0\)". (ב) \(a_n\ne0\), ול-\(\frac1{a_n}\) אין תת-סדרה חסומה ⇐ \(a_n\to0\).</p>
+<p class="s">(א) \(\exists\varepsilon_0\ \forall N\ \exists n>N:\ |a_n|\ge\varepsilon_0\). (ב) בשלילה: מ-(א) בונים תת-סדרה עם \(|a_{n_k}|\ge\varepsilon_0\), ואז \(\left|\frac1{a_{n_k}}\right|\le\frac1{\varepsilon_0}\), תת-סדרה חסומה. סתירה.</p>
+<p class="q">2. \(a_n\) חסומה מלעיל בלי מקסימום, \(S=\sup\). הוכח ש-S ג״ח.</p>
+<p class="s">אין מקסימום, ולכן \(a_n\lt S\) לכל n. בונים: \(M_k=\max\{a_{n_1},\dots,a_{n_{k-1}},S-\frac1k\}\lt S\) אינו חסם מלעיל, ולכן יש \(a_{n_k}>M_k\). מכיוון שהוא גדול מכל הקודמים, \(n_k\) חדש וגדול יותר. \(S-\frac1k\lt a_{n_k}\lt S\), וסנדוויץ׳.</p>
+<p class="q">3. (א) \(a_n=\frac{9\cdot11\cdots(2n+7)}{1\cdot4\cdots(3n-2)}\) (ב) \(b_n=(-1)^n(1+\frac1n)^n\) (ג) \(c_n=\binom{2n}n,\ d_n=\sqrt[n]{c_n}\)</p>
+<p class="s">(א) מנה \(\frac{2n+9}{3n+1}\to\frac23\), \(\lim a_n=0\), \(\lim a_n^n=0\). (ב) \((1+\frac1n)^n\) עולה ממש ל-e ולא מגיעה אליו, ולכן: sup=e, max לא קיים, inf=−e, min לא קיים, limsup=e, liminf=−e. (ג) \(\frac{c_{n+1}}{c_n}=\frac{(2n+2)(2n+1)}{(n+1)^2}\to4\), \(c_n\to\infty\); \(d_n=\sqrt[n]{c_n}\to4\) (מנה ⇐ שורש), \(\frac{d_{n+1}}{d_n}\to1\).</p></div>
+
+<div class="quiz"><h3>חורף תש״פ <span class="chip src">11.12.2019 · 3 שאלות</span></h3>
+<p class="q">1. (א) דוגמה: \(a_n\) חסומה, \(b_n\) שונים זה מזה, כולם ג״ח של a, ו-\(b_n\to L\). (ב) הוכח שבמצב כזה L ג״ח של a.</p>
+<p class="s">(א) \(a_n\): \(1,\ 1,\frac12,\ 1,\frac12,\frac13,\dots\), ו-\(b_n=\frac1n\to0\). (ב) אוסף הג״ח סגור (סעיף ה).</p>
+<p class="q">2. מרתפים: (א) דוגמה עם מרתף אחד בדיוק. (ב) אינסוף מרתפים ⇐ תת-סדרה עולה. (ג) מספר סופי ⇐ תת-סדרה יורדת. (ד) נסח והוכח BW.</p>
+<p class="s">(א) \(a_1=0\) ו-\(a_n=\frac1n\) (n≥2): \(a_1\) מרתף, ושאר האיברים לא (יש אחריהם קטנים יותר). (ב) המרתפים עצמם עולים. (ג) אחרי המרתף האחרון לכל איבר יש איבר מאוחר יותר שקטן ממנו ממש, וזו תת-סדרה יורדת ממש. (ד) חסומה ⇐ תת-סדרה מונוטונית וחסומה ⇐ מתכנסת.</p>
+<p class="q">3. \(a_n=(\frac{n+1}n)^{3n}\), \(b_n=\frac{n^{3n}}{(3n)!}\), \(c_n=\frac{n^3}{((3n)!)^{1/n}}\): גבול, שורש, מנה.</p>
+<p class="s">a: גבול \(e^3\), שורש 1, מנה 1. b: מנה \(\frac{e^3}{27}\), שורש \(\frac{e^3}{27}\), גבול 0 (כי \(e^3\approx20.1\lt27\)). c: \(c_n=\sqrt[n]{b_n}\to\frac{e^3}{27}\), שורש 1, מנה 1.</p></div>
+
+<div class="quiz"><h3>אביב תש״פ <span class="chip src">27.5.2020 · 3 שאלות</span></h3>
+<p class="q">1. הוכח את משפט גבול המנה.</p>
+<p class="s">ראה סעיף 4, הוכחה 2.</p>
+<p class="q">2. \(b_n=a_n^2-2a_n\). (א) b מתכנסת ⇐ a חסומה. (ב) \(b_n\to3\) ⇐ a מתכנסת, או שיש לה בדיוק שני ג״ח סופיים.</p>
+<p class="s">(א) \((a_n-1)^2=b_n+1\) מתכנסת, ולכן חסומה, ולכן \(a_n\) חסומה. (ב) לכל ג״ח L: \(L^2-2L=3\Rightarrow L\in\{3,-1\}\). a חסומה, ולכן יש ג״ח לפי BW. אם יש אחד, הסדרה מתכנסת. אחרת יש בדיוק שניים.</p>
+<p class="q">3. טבלת דוגמאות נגדיות מהסדרות (1) \(\sqrt n\) (2) \(1-\frac1n\) (3) \((-1)^n(1+\frac1n)\) (4) \((1+\frac{(-1)^n}{n})^n\) (5) \((1+\frac1n)^{n^2}\) (6) \((1+\frac1n)^{-n^2}\).</p>
+<p class="s">א-3, ב-6, ג-1, ד-2, ה-נכון. (א: \(\limsup=1\lt\sup=\frac32\) וגם \(\liminf=-1>\inf=-2\). ב: \((1+\frac1n)^{-n^2}\to0\) והמנה \(\to\frac1e\ne1\). ג: \(\frac{\sqrt n}{n}\to0\) אבל \(\sqrt n\) לא חסומה. ד: \(0\le1-\frac1n\lt1\) אבל \((1-\frac1n)^n\to\frac1e\). ה: \(\sqrt[n]{a_n}\) בין \(\sqrt[n]{L/2}\) ל-\(\sqrt[n]{2L}\), וסנדוויץ׳.)</p></div>
+
+<div class="quiz"><h3>חורף תשפ״א <span class="chip src">6.12.2020 · 2 שאלות</span></h3>
+<p class="q">1. (א) הגדר inf ו-min. (ב) \(A=\{\frac{(1+\frac1n)^{n^2}}{2^n}\}\): inf ו-min. (ג) \(b_n=\sum_{k=1}^n\frac1{(1+\frac1k)^{k^2}}\) חסומה מלעיל. (ד) \(b_n\) מתכנסת.</p>
+<p class="s">(ב) ברנולי: \((1+\frac1n)^n\ge2\), ולכן כל איבר \(\ge1\), ו-n=1 נותן 1. inf=min=1. (ג) כל מחובר \(\le\frac1{2^k}\), ולכן \(b_n\le1\). (ד) עולה וחסומה.</p>
+<p class="q">2. לכל ε קיים N כך שלכל \(m,n>N\): \(|a_n-b_m|\lt\varepsilon\). (א) שתיהן מתכנסות. (ב) לאותו גבול.</p>
+<p class="s">(א) \(|a_n-a_m|\le|a_n-b_{N+1}|+|b_{N+1}-a_m|\lt2\varepsilon\), ולכן קושי. אותו דבר ל-b. (ב) עם m=n: \(|a_n-b_n|\lt\varepsilon\), ולכן \(a_n-b_n\to0\).</p></div>
+
+<div class="quiz"><h3>אביב תשפ״א <span class="chip src">20.5.2021 · 2 שאלות</span></h3>
+<p class="q">1. (א) יורדת וחסומה מלרע ⇐ מתכנסת. (ב) \(b_1=1,\ b_{n+1}=\frac12(b_n+\frac2{b_n})\).</p>
+<p class="s">זהה לאביב תשע״ו שאלה 2.</p>
+<p class="q">2. (א) לסדרה מתכנסת יש תת-סדרה מונוטונית. (ב) לסדרה חסומה יש תת-סדרה מונוטונית.</p>
+<p class="s">(א) ראה סעיף ה. (ב) BW נותן תת-סדרה מתכנסת, ולה יש תת-סדרה מונוטונית לפי (א).</p></div>
+
+<div class="quiz"><h3>חורף תשפ״ב <span class="chip src">17.12.2021 · 3 שאלות</span></h3>
+<p class="q">1. זהה לאביב תשע״ז 1 (תת-סדרה עולה ממש מ-\((L-\varepsilon,L)\)).</p>
+<p class="s">ראה אביב תשע״ז.</p>
+<p class="q">2. לכל ε, החל ממקום מסוים \(a_n\lt b_n+\varepsilon\). (א) שתיהן מתכנסות ⇐ \(M\le L\). (ב) נסח BW. (ג) שתיהן חסומות ⇐ \(\limsup a\le\limsup b\).</p>
+<p class="s">(א) \(a_n\to M\) ו-\(b_n+\varepsilon\to L+\varepsilon\), ולכן מסדר גבולות \(M\le L+\varepsilon\) לכל ε, כלומר \(M\le L\). (ג) תת-סדרה \(a_{n_k}\to M\). ל-\(b_{n_k}\) יש תת-סדרה מתכנסת לגבול \(K\le L\) (כל ג״ח ≤ limsup). לפי (א) על תתי-הסדרות, \(M\le K\le L\).</p>
+<p class="q">3. \(a_n=(-1)^n-\frac1{(1+\frac1n)^{2n}}\): sup, max, inf, min, limsup, liminf, lim.</p>
+<p class="s">sup \(=1-\frac1{e^2}\), max לא קיים, inf=min \(=-\frac54\) (n=1), limsup \(=1-\frac1{e^2}\), liminf \(=-1-\frac1{e^2}\), lim לא קיים.</p></div>
+
+<div class="quiz"><h3>חורף תשפ״ג <span class="chip src">9.12.2022 · 3 שאלות</span></h3>
+<p class="q">1. \(a_n\) חסומה. (א) \(L_k\) ג״ח ו-\(L_k\to L\) ⇐ L ג״ח. (ב) לכל ε יש מספר סופי של איברים מעל \(\limsup+\varepsilon\).</p>
+<p class="s">ראה סעיף ה (אוסף הג״ח סגור; אפיון limsup).</p>
+<p class="q">2. (א) הגדר sup. (ב) \(a_n\) עולה ממש ⇐ sup אינו איבר. (ג) A חסומה, ולכל \(B\subseteq A\) גם sup B וגם inf B שייכים ל-B ⇐ A סופית.</p>
+<p class="s">(ב) אם \(\sup=a_m\), אז \(a_{m+1}>a_m\), סתירה. (ג) נניח בשלילה ש-A אינסופית. \(a_1=\min A\), \(a_2=\min(A\setminus\{a_1\})\), וכן הלאה. זו סדרה עולה ממש. ל-\(B=\{a_n\}\) לפי (ב) ה-sup לא ב-B. סתירה.</p>
+<p class="q">3. \(a_n=(\frac{n+1}n)^{2n}\), \(b_n=\frac{n^{2n}}{(2n)!}\), \(c_n=\frac{n^2}{((2n)!)^{1/n}}\).</p>
+<p class="s">a: גבול \(e^2\), שורש 1, מנה 1. b: מנה \(\frac{e^2}4>1\), שורש \(\frac{e^2}4\), גבול ∞. c: גבול \(\frac{e^2}4\), שורש 1, מנה 1.</p></div>
+
+<div class="quiz"><h3>אביב תשפ״ג <span class="chip src">2.6.2023 · 3 שאלות</span></h3>
+<p class="q">1. (א) \(\lim(3^n-n^2)\) (ב) \(\lim(\frac{n+2}{n+5})^n\) (ג) \(\lim\lfloor\sqrt{n^2+3n+1}-\sqrt{n^2+1}\rfloor\)</p>
+<p class="s">(א) \(3^n(1-\frac{n^2}{3^n})\), ו-\(\frac{n^2}{3^n}\to0\) (שורש \(\to\frac13\)), ולכן ∞. (ב) \(e^{-3}\). (ג) הביטוי שואף ל-\(\frac32\), ולכן החל ממקום מסוים הערך השלם הוא 1.</p>
+<p class="q">2. (א) הגדר קושי. (ב) \(|a_{n+1}-a_n|\le q^n\): הסדרה בהכרח מתכנסת ⇔ \(q\lt1\). (ג) נסיגה עם \(\pm\frac1{2^n}\) לפי ראשוניות: האם מתכנסת?</p>
+<p class="s">(ב) ⇐: T11. ⇒: אם \(q\ge1\), \(a_n=n\) מקיימת את התנאי ולא מתכנסת. (ג) \(|a_{n+1}-a_n|=\frac1{2^n}\), q=½, ולכן מתכנסת.</p>
+<p class="q">3. (א) נסח BW. (ב) \(a_n,b_n\) חסומות ⇐ יש \(a_{n_k},b_{n_k}\) מתכנסות עם אותם אינדקסים.</p>
+<p class="s">ראה סעיף 4, הוכחה 9.</p></div>
+
+<div class="quiz"><h3>אודיסאה תשפ״ה <span class="chip src">10.11.2024 · 3 שאלות</span></h3>
+<p class="q">1. (א) \(\lim\frac{(n+5)^n-(n-3)^n}{n^n+2^n}\) (ב) \(\lim\frac{\sqrt{n+5}\,\sin(e^{n!})}{3^n}\) (ג) \(\lim\frac1{\sqrt n}\sum_{k=1}^{n}\frac1{\sqrt{2k-1}+\sqrt{2k+1}}\)</p>
+<p class="s">(א) מחלקים ב-\(n^n\): \(\frac{(1+\frac5n)^n-(1-\frac3n)^n}{1+(\frac2n)^n}\to e^5-e^{-3}\). (ב) \(\frac{\sqrt{n+5}}{3^n}\to0\) כפול חסומה, ולכן 0. (ג) טלסקופ: הסכום \(=\frac{\sqrt{2n+1}-1}2\), ולכן הגבול \(\frac{\sqrt2}2\).</p>
+<p class="q">2. (א-ב) הגדר חסומה מלעיל ו-sup. (ג) M חסם מלעיל: \(M=\sup A\) ⇔ קיימת \(a_n\in A\) עם \(a_n\to M\). (ד) הוכח/הפרך: \(M=\sup A\) ⇐ קיימת סדרה עולה ממש ב-A שמתכנסת ל-M.</p>
+<p class="s">(ג) ⇒: T6 עם \(\varepsilon=\frac1n\) וסנדוויץ׳. ⇐: לכל ε החל ממקום מסוים \(a_n>M-\varepsilon\), ולכן \(M-\varepsilon\) אינו חסם. (ד) לא נכון: \(A=\{0\}\), ואין בה סדרה עולה ממש.</p>
+<p class="q">3. (א) הגדרת גבול. (ב) \(\lim\max\{a_n,b_n\}=\max\{a,b\}\) לפי ההגדרה.</p>
+<p class="s">דרך נקייה: עם \(N=\max\{N_1,N_2\}\), \(\max\{a_n,b_n\}>\max\{a-\varepsilon,b-\varepsilon\}=\max\{a,b\}-\varepsilon\), וגם \(a_n,b_n\lt\max\{a,b\}+\varepsilon\). שתי השורות יחד נותנות את ההגדרה.</p></div>
+
+<div class="quiz"><h3>אביב תשפ״ה <span class="chip src">30.5.2025 · 3 שאלות</span></h3>
+<p class="q">1. \(a_1=1,\ a_{n+1}=\frac{3(1+a_n)}{3+a_n}\).</p>
+<p class="s">T7. חסם באינדוקציה: \(\frac{3(1+a)}{3+a}\le\sqrt3\Leftrightarrow a(3-\sqrt3)\le\sqrt3(3-\sqrt3)\Leftrightarrow a\le\sqrt3\). חיוביות באינדוקציה (מנה של חיוביים). מונוטוניות: \(a_{n+1}-a_n=\frac{3-a_n^2}{3+a_n}\ge0\). עולה וחסומה, ומ-\(L=\frac{3(1+L)}{3+L}\) מקבלים \(L^2=3\), כלומר \(L=\sqrt3\).</p>
+<p class="q">2. (א) ∞ ג״ח ⇐ לא חסומה מלעיל. (ב) \(a_n\lt L+\varepsilon\) החל ממקום מסוים לכל ε: (1) חסומה מלעיל. (2) \(\limsup\le L\).</p>
+<p class="s">(א) לכל M יש \(a_{n_k}>M\). (ב1) ε=1, ו-max עם N האיברים הראשונים. (ב2) לכל ג״ח, תת-הסדרה מקיימת \(a_{n_j}\lt L+\varepsilon\) החל ממקום מסוים, ולכן מסדר גבולות הג״ח \(\le L+\varepsilon\) לכל ε.</p>
+<p class="q">3. זהה לאודיסאה 3.</p>
+<p class="s">ראה אודיסאה.</p></div>
+
+<div class="quiz"><h3>חורף תשפ״ו <span class="chip src">12.12.2025 · 2 שאלות · הבוחן הכי עדכני</span></h3>
+<p class="q">1. (א) הגדר \(\lim a_n=L\). (ב) \(b_n\to K>0\) ⇐ החל ממקום מסוים \(b_n>\frac K2\). (ג) \(a_n\ne0\), \(a_n\to L\ne0\) ⇐ \(\frac1{a_n}\to\frac1L\) לפי ההגדרה.</p>
+<p class="s">(ב) \(\varepsilon=\frac K2\). (ג) ראה סעיף 4, הוכחה 2 (מ-(ב) על \(|a_n|\to|L|\)).</p>
+<p class="q">2. (א) השלם את השלילה. (ב) חסומה עם ג״ח יחיד ⇐ מתכנסת. (ג) דוגמה לחסומה עם אינסוף ג״ח שונים, כולם רציונליים. (ד) הג״ח של \((-1)^n+\left(\frac{n^{2n}}{(2n)!}\right)^{1/n}\).</p>
+<p class="s">(א) <b>קיים</b> ε>0 <b>כך שמחוץ ל</b>סביבה \((L-\varepsilon,L+\varepsilon)\) <b>יש אינסוף איברים של</b> \(a_n\). (ב) T2. (ג) \(1,\ 1,\frac12,\ 1,\frac12,\frac13,\ \dots\): הג״ח הם \(\{\frac1k\}\cup\{0\}\). (ד) \(\left(\frac{n^{2n}}{(2n)!}\right)^{1/n}\to\frac{e^2}4\), ולכן הג״ח הם \(1+\frac{e^2}4\) ו-\(-1+\frac{e^2}4\).</p></div>
+
+<!-- ===================== PLAN ===================== -->
+<h2 id="plan">7. סדר עדיפויות לחזרה</h2>
+<ol>
+<li><b>הגדרות בכמתים, כולל השלילה:</b> גבול, ∞, קושי, sup/inf, ג״ח, חסומה. 10 דקות ביום עד הבוחן. זה הניקוד הכי בטוח.</li>
+<li><b>ארבע ההוכחות הגדולות:</b> מונוטונית-חסומה, גבול של \(1/a_n\) ושל מנה, אפיון ג״ח, ג״ח יחיד ⇐ מתכנסת.</li>
+<li><b>T1 ו-T2</b> עד שהם אוטומטיים. רוב שאלות ה-20 נקודות הן אחד מהם.</li>
+<li><b>שאלת ג׳ורג׳י:</b> \(\frac{x^nn!}{n^n}\), \(\frac{n^{kn}}{(kn)!}\), \(\sqrt[n]{n!}/n\), \(\binom{2n}n\), וגבולות e. פתור פעם אחת את חורף פ׳ ואת חורף פ״ג בלי להציץ.</li>
+<li><b>נסיגה בשלושה צעדים.</b></li>
+<li><b>בנק הדוגמאות הנגדיות.</b></li>
+<li>קנטור ו-[0,1]. היינה-בורל וחזקות ממשיות אחרונים.</li>
+</ol>
+<p class="tip"><b>הערה מקצועית:</b> הדרך הכי טובה להשתמש בדף היא לפתור בחן שלם (למשל חורף פ״ו, הכי עדכני) בתנאי מבחן, שעה וחצי, ורק אחר כך לבדוק מול הפתרונות כאן. קריאה של פתרונות נותנת תחושת הבנה שלא תמיד מחזיקה מול דף ריק.</p>
+</main>
+</div>

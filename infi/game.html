@@ -1,0 +1,399 @@
+<title>זיכרון משפטים · אינפי 1מ׳</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&family=Frank+Ruhl+Libre:wght@500;700&display=swap">
+<script>
+window.MathJax = { tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] }, svg: { fontCache: 'global' }, startup: { typeset: false } };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" async></script>
+<style>
+/* Layout: one game board centered on graph paper; top bar = mode tabs + score, cards in a responsive grid */
+:root{
+  --bg:#f6f4fa; --grid:#e7e2f0; --ink:#1f1b2b; --muted:#666077; --card:#ffffff; --back:#2a2340; --back2:#3b3159;
+  --hl:#e0338f; --hl-soft:#fde3f0; --ok:#12866f; --ok-soft:#d9f3ec; --bad:#c2313f; --bad-soft:#fbe1e4; --amber:#a35d00; --amber-soft:#fff1d9;
+  --f-ui:"Rubik", "Segoe UI", Arial, sans-serif; --f-math:"Frank Ruhl Libre", Georgia, serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#14111c; --grid:#211c2c; --ink:#efeaf7; --muted:#a9a2ba; --card:#1f1a2b; --back:#e0338f; --back2:#a51f66;
+  --hl:#ff6db3; --hl-soft:#40192f; --ok:#5fd3bc; --ok-soft:#123630; --bad:#ff7c88; --bad-soft:#3d1a20; --amber:#ffbf5e; --amber-soft:#3a2a10; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#14111c; --grid:#211c2c; --ink:#efeaf7; --muted:#a9a2ba; --card:#1f1a2b; --back:#e0338f; --back2:#a51f66;
+  --hl:#ff6db3; --hl-soft:#40192f; --ok:#5fd3bc; --ok-soft:#123630; --bad:#ff7c88; --bad-soft:#3d1a20; --amber:#ffbf5e; --amber-soft:#3a2a10; color-scheme:dark }
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;
+  color:var(--ink);font-family:var(--f-ui);direction:rtl;font-size:16px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
+.app{max-width:1060px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+h1{margin:0;font-weight:800;font-size:clamp(1.5rem,4vw,2.1rem);letter-spacing:-.01em}
+h1 span{background:linear-gradient(transparent 55%, var(--hl-soft) 55%);padding:0 4px}
+.tabs{display:flex;gap:6px;background:var(--card);padding:5px;border-radius:12px;border:1px solid var(--grid)}
+.tab{font:inherit;font-weight:700;border:0;background:transparent;color:var(--muted);padding:8px 14px;border-radius:8px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--card);border:1px solid var(--grid);border-radius:12px;padding:10px 14px}
+.bar label{font-size:14px;color:var(--muted);display:flex;gap:6px;align-items:center}
+select,button{font:inherit}
+select{padding:6px 8px;border-radius:8px;border:1px solid var(--grid);background:var(--bg);color:var(--ink)}
+.btn{border:0;background:var(--hl);color:#fff;font-weight:700;padding:8px 16px;border-radius:10px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn.ok{background:var(--ok)} .btn.bad{background:var(--bad)} .btn.mid{background:var(--amber)}
+.btn:focus-visible,.tab:focus-visible,.card:focus-visible,select:focus-visible,.opt:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+.stats{margin-inline-start:auto;display:flex;gap:14px;font-variant-numeric:tabular-nums;font-weight:700}
+.stat small{display:block;font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+.combo{color:var(--hl)}
+/* memory grid */
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;max-width:880px;width:100%;margin:0 auto}
+@media (max-width:560px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}}
+.card{position:relative;aspect-ratio:5/4;perspective:900px;cursor:pointer;border:0;padding:0;background:none;border-radius:14px;max-width:100%}
+.inner{position:absolute;inset:0;transition:transform .45s cubic-bezier(.3,1.4,.5,1);transform-style:preserve-3d}
+.card.up .inner,.card.done .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;overflow:hidden}
+.back{background:repeating-linear-gradient(45deg,var(--back),var(--back) 10px,var(--back2) 10px,var(--back2) 20px);color:#fff;font-weight:800;font-size:28px;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.back::after{content:"∫";font-family:var(--f-math);opacity:.85}
+.front{transform:rotateY(180deg);background:var(--card);border:2px solid var(--grid);flex-direction:column;gap:4px;font-size:13.5px;line-height:1.35}
+.front.name{font-weight:800;font-size:15px;border-color:var(--hl)}
+.front.name .tagn{font-size:10.5px;font-weight:700;color:var(--hl);letter-spacing:.05em}
+.front.stmt{font-family:var(--f-math);font-size:13px;overflow:auto;align-items:stretch;justify-content:center}
+.card.done .front{background:var(--ok-soft);border-color:var(--ok)}
+.card.miss .front{animation:shake .4s}
+@keyframes shake{25%{transform:rotateY(180deg) translateX(4px)}75%{transform:rotateY(180deg) translateX(-4px)}}
+mjx-container{direction:ltr;max-width:100%}
+.front mjx-container{font-size:92%!important}
+/* panels */
+.panel{background:var(--card);border:1px solid var(--grid);border-radius:16px;padding:18px 20px}
+.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom, 0px));left:max(16px, env(safe-area-inset-left, 0px));right:max(16px, env(safe-area-inset-right, 0px));margin:0 auto;max-width:640px;background:var(--card);border:2px solid var(--ok);border-radius:14px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:20}
+.toast h3{margin:0 0 4px;font-size:16px}
+.toast .x{float:left;border:0;background:transparent;font-size:20px;cursor:pointer;color:var(--muted)}
+.explain{margin-top:8px;padding:10px 12px;background:var(--amber-soft);border-radius:8px;font-size:14.5px}
+.explain b{color:var(--amber)}
+.chip{display:inline-block;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:99px;margin-inline-start:6px;vertical-align:middle}
+.chip.rep{background:var(--hl);color:#fff} .chip.add{background:var(--ok-soft);color:var(--ok)} .chip.heavy{background:var(--amber-soft);color:var(--amber)}
+/* flash */
+.flash{max-width:720px;margin:0 auto;width:100%}
+.fname{font-size:clamp(1.3rem,3.5vw,1.8rem);font-weight:800;margin:6px 0 10px}
+.fstmt{font-family:var(--f-math);font-size:17px;line-height:1.7;padding:14px;border-radius:10px;background:var(--bg);border:1px dashed var(--grid)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.boxes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.box{background:var(--bg);border-radius:10px;padding:8px;text-align:center;font-size:12.5px;color:var(--muted)}
+.box b{display:block;font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums}
+.box.m b{color:var(--ok)}
+/* quiz */
+.qstmt{font-family:var(--f-math);font-size:17px;line-height:1.7;padding:14px;border-radius:10px;background:var(--bg);margin:10px 0}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:520px){.opts{grid-template-columns:minmax(0,1fr)}}
+.opt{font:inherit;font-weight:700;text-align:right;padding:12px 14px;border-radius:12px;border:2px solid var(--grid);background:var(--card);color:var(--ink);cursor:pointer;min-width:0}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)} .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.lives{letter-spacing:2px;color:var(--hl);font-size:18px}
+.timer{height:6px;background:var(--grid);border-radius:99px;overflow:hidden}
+.timer i{display:block;height:100%;background:var(--hl);width:100%;transition:width .1s linear}
+.win{text-align:center;padding:26px}
+.win .big{font-size:44px;font-weight:800}
+.muted{color:var(--muted)}
+@media (prefers-reduced-motion: reduce){.inner{transition:none}.card.miss .front{animation:none}}
+</style>
+
+<div class="app">
+  <header>
+    <h1>זיכרון <span>משפטים</span></h1>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="t-match" aria-selected="true">זוגות</button>
+      <button class="tab" role="tab" id="t-flash" aria-selected="false">כרטיסיות</button>
+      <button class="tab" role="tab" id="t-quiz" aria-selected="false">ריצת מהירות</button>
+    </div>
+  </header>
+
+  <div class="bar">
+    <label for="topic">נושא
+      <select id="topic">
+        <option value="all">הכול</option>
+        <option value="rep">רק מה שחוזר בבחנים</option>
+        <option value="heavy">רק המשפטים הכבדים</option>
+        <option value="basic">יסודות ו-sup</option>
+        <option value="lim">גבולות</option>
+        <option value="calc">כלי חישוב</option>
+        <option value="mono">מונוטוניות וקנטור</option>
+        <option value="sub">תתי-סדרות ו-BW</option>
+        <option value="cauchy">קושי</option>
+        <option value="topo">טופולוגיה והיינה-בורל</option>
+        <option value="pow">חזקות ממשיות</option>
+      </select>
+    </label>
+    <label for="size" id="sizeWrap">זוגות
+      <select id="size"><option>6</option><option selected>8</option><option>10</option><option>12</option></select>
+    </label>
+    <button class="btn" id="go">משחק חדש</button>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <section id="view" aria-live="polite"></section>
+</div>
+<div id="toastHost"></div>
+
+<script>
+const R = String.raw;
+// topic: basic lim calc mono sub cauchy topo pow · rep = number of quizzes · add = from the handwritten list · ex = explanation for heavy theorems
+const T = [
+ {id:'bern',t:'basic',n:'אי-שוויון ברנולי',rep:2,s:R`\((1+\alpha)^n\ge 1+n\alpha\) לכל \(n\in\mathbb N,\ \alpha>-1\)`},
+ {id:'binom',t:'basic',n:'הבינום של ניוטון',add:1,s:R`\((a+b)^n=\sum_{k=0}^{n}\binom nk a^k b^{n-k}\)`},
+ {id:'dense',t:'basic',n:'צפיפות הרציונליים',add:1,s:R`לכל \(x\lt y\) קיימים \(q\in\mathbb Q\) ו-\(r\notin\mathbb Q\) ביניהם`},
+ {id:'tri',t:'basic',n:'אי-שוויון המשולש',rep:12,s:R`\(|x+y|\le|x|+|y|\)`},
+ {id:'rtri',t:'basic',n:'המשולש ההפוך',rep:3,s:R`\(\big||x|-|y|\big|\le|x-y|\)`},
+ {id:'absM',t:'basic',n:'ערך מוחלט קטן מ-M',add:1,s:R`\(|x|\lt M\iff -M\lt x\lt M\)`},
+ {id:'supdef',t:'basic',n:'הגדרת sup',rep:8,s:R`החסם מלעיל <b>הקטן ביותר</b>: חסם מלעיל, וכל חסם k מקיים \(\sup A\le k\)`},
+ {id:'supeps',t:'basic',n:'אפיון sup עם ε',rep:8,s:R`\(M=\sup A\iff\) M חסם מלעיל ו-\(\forall\varepsilon>0\ \exists a\in A:\ a>M-\varepsilon\)`,
+  ex:R`החלק השני אומר שאי אפשר להוריד את M אפילו קצת. עם \(\varepsilon=\frac1n\) מקבלים \(a_n\in A\) עם \(a_n\to\sup A\). זה פותח את הוכחת "מונוטונית וחסומה מתכנסת" ואת "sup שלא מתקבל הוא ג״ח".`},
+ {id:'compl',t:'basic',n:'אקסיומת השלמות',rep:5,s:R`לכל קבוצה <b>לא ריקה</b> וחסומה מלעיל ב-\(\mathbb R\) יש sup ממשי`},
+ {id:'amgm',t:'basic',n:'אי-שוויון הממוצעים',rep:3,s:R`\(\frac{n}{\sum 1/a_i}\le\sqrt[n]{a_1\cdots a_n}\le\frac{a_1+\dots+a_n}{n}\), שוויון ⇔ כולם שווים`},
+ {id:'floor',t:'basic',n:'ערך שלם',add:1,s:R`\(x-1\lt\lfloor x\rfloor\le x\)`},
+ {id:'nroot',t:'basic',n:'קיום שורש n-י',add:1,s:R`לכל \(x>0\) קיים \(y>0\) יחיד עם \(y^n=x\)`},
+
+ {id:'limdef',t:'lim',n:'הגדרת הגבול',rep:12,s:R`\(\forall\varepsilon>0\ \exists N\ \forall n>N:\ |a_n-L|\lt\varepsilon\)`},
+ {id:'limneg',t:'lim',n:'שלילת הגבול',rep:5,s:R`\(\exists\varepsilon_0>0\ \forall N\ \exists n>N:\ |a_n-L|\ge\varepsilon_0\). קיימת סביבה שמחוץ לה אינסוף איברים`},
+ {id:'uniq',t:'lim',n:'יחידות הגבול',rep:6,s:R`לסדרה יש לכל היותר גבול אחד`},
+ {id:'convb',t:'lim',n:'מתכנסת ⇐ חסומה',rep:5,s:R`כל סדרה מתכנסת חסומה. לא חסומה ⇐ מתבדרת`},
+ {id:'quot',t:'lim',n:'גבול של מנה',rep:3,s:R`\(a_n\to L,\ b_n\to K\ne0,\ b_n\ne0\ \Rightarrow\ \frac{a_n}{b_n}\to\frac LK\)`},
+ {id:'bz',t:'lim',n:'חסומה כפול אפסה',rep:5,s:R`\(b_n\) חסומה ו-\(a_n\to0\) \(\Rightarrow a_nb_n\to0\)`},
+ {id:'sand',t:'lim',n:'משפט הסנדוויץ׳',rep:9,s:R`\(a_n\le b_n\le c_n\) ו-\(a_n,c_n\to L\ \Rightarrow\ b_n\to L\)`},
+ {id:'sign',t:'lim',n:'שימור סימן',rep:4,s:R`\(a_n\to L>0\ \Rightarrow\) החל ממקום מסוים \(a_n>\frac L2\)`},
+ {id:'order',t:'lim',n:'סדר גבולות',rep:6,s:R`\(a_n\ge b_n\), \(a_n\to L,\ b_n\to K\ \Rightarrow\ L\ge K\) (גם אם \(a_n>b_n\), רק \(\ge\))`},
+ {id:'cesaro',t:'lim',n:'צ׳זרו (ממוצעים חשבוניים)',add:1,s:R`\(a_n\to L\Rightarrow\frac{a_1+\dots+a_n}{n}\to L\)`,
+  ex:R`אחרי N איברים כולם קרובים ל-L, והאיברים ה"רעים" הם מספר סופי שמתחלק ב-n ההולך וגדל. ההפך לא נכון: הממוצעים של \((-1)^n\) שואפים ל-0.`},
+ {id:'geomm',t:'lim',n:'ממוצע הנדסי והרמוני',add:1,s:R`\(a_n>0,\ a_n\to L\Rightarrow\sqrt[n]{a_1\cdots a_n}\to L\) וגם \(\frac{n}{\sum 1/a_k}\to L\)`},
+
+ {id:'r2r',t:'calc',n:'מנה ⇐ שורש',rep:7,s:R`\(a_n>0,\ \frac{a_{n+1}}{a_n}\to L\ \Rightarrow\ \sqrt[n]{a_n}\to L\)`,
+  ex:R`אם המנה מתייצבת סביב L, אז \(a_n\approx C L^n\). מכאן \(\sqrt[n]{n!}/n\to\frac1e\) ו-\(\sqrt[n]{\binom{2n}n}\to4\). ההפך לא נכון: \(2^{(-1)^n}\).`},
+ {id:'nroots',t:'calc',n:'שורשים ידועים',rep:8,s:R`\(\sqrt[n]{c}\to1\ (c>0)\), \(\sqrt[n]{n}\to1\)`},
+ {id:'qn',t:'calc',n:'סדרה הנדסית',rep:5,s:R`\(|q|\lt1\Rightarrow q^n\to0\); \(c>1\Rightarrow c^n\to\infty\)`},
+ {id:'e',t:'calc',n:'המספר e',rep:9,s:R`\((1+\frac1n)^n\) עולה, חסומה, ו-\(\to e\)`},
+ {id:'ex',t:'calc',n:'גבול \(e^x\)',rep:4,s:R`\(|a_n|\to\infty\Rightarrow(1+\frac x{a_n})^{a_n}\to e^x\)`},
+ {id:'ab',t:'calc',n:'חזקה של גבולות',rep:2,s:R`\(a_n\to a>0,\ b_n\to b\Rightarrow a_n^{b_n}\to a^b\)`},
+ {id:'pizza',t:'calc',n:'משפט הפיצה',rep:3,s:R`\(a_n\le b_n\) ו-\(a_n\to\infty\Rightarrow b_n\to\infty\)`},
+ {id:'inv',t:'calc',n:'הפיכה',rep:3,s:R`\(a_n\to\infty\Rightarrow\frac1{a_n}\to0\); \(a_n>0,\ a_n\to0\Rightarrow\frac1{a_n}\to\infty\)`},
+ {id:'rtest',t:'calc',n:'מבחן המנה / השורש',rep:11,s:R`\(q=\lim\frac{a_{n+1}}{a_n}\) (או \(\sqrt[n]{a_n}\)): \(q\lt1\Rightarrow0\), \(q>1\Rightarrow\infty\), \(q=1\) לא מכריע`,
+  ex:R`החל ממקום מסוים \(a_{n+1}\le r a_n\) עם \(r\lt1\), כלומר הסדרה נשלטת על ידי סדרה הנדסית. q=1 הוא החור: \(\frac1n\), 1 ו-n כולן עם q=1. בסדרות עם סימן מתחלף מפעילים על \(|a_n|\).`},
+ {id:'nfact',t:'calc',n:'שורש של עצרת',rep:4,s:R`\(\frac{\sqrt[n]{n!}}{n}\to\frac1e\) ו-\(\frac{x^nn!}{n^n}\): מנה \(\to\frac xe\)`},
+ {id:'infdef',t:'calc',n:'גבול אינסופי',rep:6,s:R`\(a_n\to\infty\iff\forall M>0\ \exists N\ \forall n>N:\ a_n>M\)`},
+
+ {id:'mono',t:'mono',n:'מונוטונית וחסומה מתכנסת',rep:10,s:R`עולה וחסומה מלעיל \(\to\sup\); יורדת וחסומה מלרע \(\to\inf\)`,
+  ex:R`ההוכחה: L=inf קיים לפי השלמות. \(L+\varepsilon\) אינו חסם מלרע, ולכן יש \(a_N\lt L+\varepsilon\). הסדרה יורדת, ולכן \(L\le a_n\le a_N\lt L+\varepsilon\) לכל n>N. נשאלה כהוכחה ב-4 בחנים.`},
+ {id:'monow',t:'mono',n:'מונוטונית במובן הרחב',rep:3,s:R`כל סדרה מונוטונית מתכנסת במובן הרחב; עולה ולא חסומה \(\to\infty\)`},
+ {id:'cantor',t:'mono',n:'הלמה של קנטור',rep:2,s:R`\([a_{n+1},b_{n+1}]\subseteq[a_n,b_n]\), \(b_n-a_n\to0\ \Rightarrow\) קיימת c יחידה בכל הקטעים`,
+  ex:R`\(a_n\) עולה וחסומה ו-\(b_n\) יורדת וחסומה, ושתיהן מתכנסות לאותו c. השימוש: [0,1] לא בת-מנייה, כי בכל שלב בוחרים שליש שלא מכיל את \(x_n\). הקטעים חייבים להיות סגורים: \(\bigcap(0,\frac1n)=\emptyset\).`},
+
+ {id:'subconv',t:'sub',n:'תת-סדרה של מתכנסת',rep:8,s:R`\(a_n\to L\Rightarrow\) כל תת-סדרה \(\to L\). שני ג״ח שונים ⇐ אין גבול`},
+ {id:'nj',t:'sub',n:'אינדקסי תת-סדרה',rep:2,s:R`\(n_j\ge j\) לכל j`},
+ {id:'pldef',t:'sub',n:'גבול חלקי',rep:15,s:R`L ג״ח אם קיימת תת-סדרה \(a_{n_j}\to L\)`},
+ {id:'plchar',t:'sub',n:'אפיון גבול חלקי',rep:8,s:R`L ג״ח \(\iff\) לכל \(\varepsilon>0\) יש <b>אינסוף</b> איברים ב-\((L-\varepsilon,L+\varepsilon)\)`,
+  ex:R`ג״ח: אינסוף איברים <i>בתוך</i> כל סביבה. גבול: רק מספר סופי <i>מחוץ</i> לכל סביבה. בכיוון ⇐ בונים תת-סדרה עם \(\varepsilon_k=\frac1k\) ואינדקס גדול מהקודם.`},
+ {id:'bw',t:'sub',n:'בולצאנו-ויירשטראס',rep:12,s:R`לכל סדרה <b>חסומה</b> יש תת-סדרה מתכנסת`,
+  ex:R`זה המנוע של הוכחות בשלילה: אינסוף איברים "רעים" ⇐ BW נותן מהם תת-סדרה מתכנסת ⇐ הגבול שלה סותר משהו. הוכחה דרך "מרתפים": לכל סדרה יש תת-סדרה מונוטונית.`},
+ {id:'lsdef',t:'sub',n:'limsup ו-liminf',rep:10,s:R`\(\limsup=\sup\) קבוצת הג״ח, \(\liminf=\inf\) קבוצת הג״ח`},
+ {id:'lsmax',t:'sub',n:'limsup הוא ג״ח',rep:6,s:R`לסדרה חסומה limsup ו-liminf הם ג״ח (הגדול והקטן ביותר)`,
+  ex:R`קבוצת הג״ח סגורה, ולכן ה-sup שלה שייך אליה. שימוש: \(\limsup\lt1\Rightarrow\) קיים \(A\lt1\) עם \(a_n\lt A\) החל ממקום מסוים. \(a_n\lt1\) לבד לא מספיק: \(1-\frac1n\).`},
+ {id:'lseq',t:'sub',n:'מתכנסת ⇔ limsup=liminf',rep:4,s:R`חסומה מתכנסת \(\iff\limsup a_n=\liminf a_n\)`},
+ {id:'lseps',t:'sub',n:'אפיון limsup עם ε',rep:4,s:R`רק מספר <b>סופי</b> של איברים מעל \(\limsup+\varepsilon\), ו<b>אינסוף</b> מעל \(\limsup-\varepsilon\)`},
+ {id:'closed',t:'sub',n:'אוסף הג״ח סגור',rep:3,s:R`\(L_k\) ג״ח ו-\(L_k\to L\Rightarrow L\) ג״ח`},
+ {id:'unique',t:'sub',n:'ג״ח יחיד ⇐ מתכנסת',rep:5,s:R`סדרה <b>חסומה</b> עם ג״ח יחיד L מתכנסת ל-L`},
+ {id:'monosub',t:'sub',n:'תת-סדרה מונוטונית',rep:3,s:R`לכל סדרה יש תת-סדרה מונוטונית`},
+
+ {id:'cdef',t:'cauchy',n:'סדרת קושי',rep:5,s:R`\(\forall\varepsilon>0\ \exists N\ \forall m,n>N:\ |a_m-a_n|\lt\varepsilon\)`},
+ {id:'ceq',t:'cauchy',n:'קושי ⇔ מתכנסת',rep:5,s:R`\(a_n\) קושי \(\iff a_n\) מתכנסת לגבול סופי (וקושי ⇐ חסומה)`,
+  ex:R`מוכיחים התכנסות בלי לדעת את הגבול, למשל \(\sum\frac{\cos k}{3^k}\) עם סכום הנדסי. מלכודת: \(a_{n+1}-a_n\to0\) לא מספיק (\(\sqrt n\)).`},
+
+ {id:'inner',t:'topo',n:'נקודה פנימית',add:1,s:R`\(x_0\in I\) פנימית אם \((x_0-\varepsilon,x_0+\varepsilon)\subseteq I\) לאיזשהו ε>0`},
+ {id:'closedI',t:'topo',n:'קטע סגור וגבולות',add:1,s:R`גבול של סדרה מתכנסת שאיבריה ב-\([a,b]\) נמצא ב-\([a,b]\)`},
+ {id:'hb',t:'topo',n:'היינה-בורל',add:1,s:R`לכל כיסוי <b>פתוח</b> של קטע <b>סגור</b> יש תת-כיסוי סופי`,
+  ex:R`חוצים: אם אין תת-כיסוי סופי, גם לאחד החצאים אין. לפי קנטור מקבלים נקודה c, וקטע פתוח אחד שמכסה את c מכסה את כל הקטעים הקטנים, סתירה. \((0,1)\) עם \((\frac1n,1)\) מראה שחייבים קטע סגור.`},
+
+ {id:'rat',t:'pow',n:'חזקה רציונלית',add:1,s:R`\(a^{m/n}=(a^{1/n})^m\), ו-\(a^x=\lim a^{x_n}\) עם רציונליים מונוטוניים \(x_n\to x\)`},
+ {id:'axn',t:'pow',n:'רציפות החזקה',add:1,s:R`\(x_n\to x\Rightarrow a^{x_n}\to a^x\); \(a_n\to a>0\Rightarrow a_n^x\to a^x\)`},
+ {id:'axinf',t:'pow',n:'חזקה לאינסוף',add:1,s:R`\(x_n\to\infty\): \(a^{x_n}\to\infty\) אם \(a>1\), ו-\(\to0\) אם \(0\lt a\lt1\)`},
+ {id:'a0',t:'pow',n:'בסיס שואף לאפס',add:1,s:R`\(a_n>0,\ a_n\to0,\ b_n\to b>0\Rightarrow a_n^{b_n}\to0\)`},
+];
+const heavy = t => !!t.ex;
+
+const $ = s => document.querySelector(s);
+const view = $('#view'), stats = $('#stats');
+const store = { get(k,d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } }, set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} } };
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+function pool(){
+  const v = $('#topic').value;
+  if (v==='all') return T;
+  if (v==='rep') return T.filter(t => (t.rep||0) >= 4);
+  if (v==='heavy') return T.filter(heavy);
+  return T.filter(t => t.t===v);
+}
+function chips(t){ return (t.rep?`<span class="chip rep">חוזר ×${t.rep}</span>`:'') + (t.add?`<span class="chip add">מהדף שלך</span>`:'') + (heavy(t)?`<span class="chip heavy">כבד</span>`:''); }
+function typeset(el){ if (window.MathJax && MathJax.typesetPromise) { MathJax.typesetClear && MathJax.typesetClear([el]); return MathJax.typesetPromise([el]).catch(()=>{}); } return Promise.resolve(); }
+function whenMath(fn){ if (window.MathJax && MathJax.typesetPromise) fn(); else setTimeout(()=>whenMath(fn), 120); }
+
+let toastTimer;
+function toast(t, good=true){
+  const host = $('#toastHost');
+  host.innerHTML = `<div class="toast" style="border-color:var(${good?'--ok':'--bad'})"><button class="x" aria-label="סגור">×</button><h3>${t.n} ${chips(t)}</h3><div>${t.s}</div>${t.ex?`<div class="explain"><b>הסבר: </b>${t.ex}</div>`:''}</div>`;
+  host.querySelector('.x').onclick = () => host.innerHTML = '';
+  typeset(host);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ host.innerHTML=''; }, t.ex ? 14000 : 6000);
+}
+
+/* ============ MODE 1: MEMORY MATCH ============ */
+let M = null;
+function startMatch(){
+  const size = +$('#size').value;
+  const src = shuffle(pool()).slice(0, Math.min(size, pool().length));
+  const cards = shuffle(src.flatMap(t => [{t, kind:'name'}, {t, kind:'stmt'}]));
+  M = { cards, open:[], done:0, pairs:src.length, moves:0, combo:0, best:0, start:Date.now(), lock:false, score:0 };
+  view.innerHTML = `<div class="grid" id="grid">${cards.map((c,i)=>`
+    <button class="card" data-i="${i}" aria-label="קלף ${i+1}">
+      <div class="inner"><div class="face back"></div>
+      <div class="face front ${c.kind}">${c.kind==='name' ? `<span class="tagn">משפט</span>${c.t.n}` : `<div>${c.t.s}</div>`}</div></div>
+    </button>`).join('')}</div>`;
+  view.querySelectorAll('.card').forEach(el => el.onclick = () => flip(el));
+  whenMath(()=>typeset(view));
+  tickMatch();
+}
+function flip(el){
+  if (M.lock || el.classList.contains('up') || el.classList.contains('done')) return;
+  el.classList.add('up'); M.open.push(el);
+  if (M.open.length < 2) return;
+  M.moves++; M.lock = true;
+  const [a,b] = M.open, ca = M.cards[a.dataset.i], cb = M.cards[b.dataset.i];
+  if (ca.t.id === cb.t.id && ca.kind !== cb.kind){
+    M.combo++; M.best = Math.max(M.best, M.combo); M.score += 100 * M.combo;
+    setTimeout(()=>{ a.classList.add('done'); b.classList.add('done'); M.open=[]; M.lock=false; M.done++; toast(ca.t, true); if (M.done===M.pairs) winMatch(); }, 380);
+  } else {
+    M.combo = 0;
+    setTimeout(()=>{ a.classList.add('miss'); b.classList.add('miss'); }, 450);
+    setTimeout(()=>{ a.classList.remove('up','miss'); b.classList.remove('up','miss'); M.open=[]; M.lock=false; }, 1150);
+  }
+  renderStats();
+}
+function renderStats(){
+  if (mode==='match' && M){
+    const s = Math.floor((Date.now()-M.start)/1000);
+    stats.innerHTML = `<div class="stat"><small>זוגות</small>${M.done}/${M.pairs}</div><div class="stat"><small>מהלכים</small>${M.moves}</div><div class="stat"><small>זמן</small>${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}</div><div class="stat combo"><small>קומבו</small>×${M.combo}</div><div class="stat"><small>ניקוד</small>${M.score}</div>`;
+  }
+}
+let matchTick;
+function tickMatch(){ clearInterval(matchTick); matchTick = setInterval(()=>{ if (mode!=='match' || !M || M.done===M.pairs) return clearInterval(matchTick); renderStats(); }, 1000); renderStats(); }
+function winMatch(){
+  const s = Math.floor((Date.now()-M.start)/1000), eff = M.pairs / M.moves;
+  const stars = eff > .8 ? 3 : eff > .55 ? 2 : 1;
+  const key = 'best-'+$('#topic').value+'-'+M.pairs, prev = store.get(key, 0), rec = M.score > prev;
+  if (rec) store.set(key, M.score);
+  const box = document.createElement('div');
+  box.className = 'panel win';
+  box.innerHTML = `<div class="big">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</div><p><b>${M.score}</b> נקודות · ${M.moves} מהלכים · ${s} שניות · קומבו מקסימלי ×${M.best}</p><p class="muted">${rec ? 'שיא חדש לנושא ולגודל הזה' : 'השיא שלך: '+prev}</p><div class="row" style="justify-content:center"><button class="btn" id="again">עוד סיבוב</button><button class="btn ghost" id="toFlash">לחזור על המשפטים בכרטיסיות</button></div>`;
+  view.prepend(box);
+  box.querySelector('#again').onclick = startMatch;
+  box.querySelector('#toFlash').onclick = () => setMode('flash');
+}
+
+/* ============ MODE 2: FLASHCARDS (Leitner) ============ */
+let F = null;
+function leitner(){ return store.get('leitner', {}); }
+function startFlash(){
+  const L = leitner(), p = pool();
+  const due = shuffle(p).sort((a,b)=>(L[a.id]||0)-(L[b.id]||0));
+  F = { list: due, i:0, shown:false, seen:0 };
+  drawFlash();
+}
+function boxesHTML(){
+  const L = leitner(), p = pool(), c=[0,0,0,0];
+  p.forEach(t => c[Math.min(L[t.id]||0,3)]++);
+  const names = ['חדש','מתחיל','כמעט','שולט'];
+  return `<div class="boxes">${c.map((n,i)=>`<div class="box ${i===3?'m':''}"><b>${n}</b>${names[i]}</div>`).join('')}</div>`;
+}
+function drawFlash(){
+  const t = F.list[F.i % F.list.length];
+  view.innerHTML = `<div class="panel flash">${boxesHTML()}
+    <div class="muted" style="font-size:13px">כרטיס ${F.seen+1} · ${chips(t)}</div>
+    <div class="fname">${t.n}</div>
+    <p class="muted">נסח לעצמך את המשפט במלואו, כולל כל התנאים, ורק אז חשוף.</p>
+    <div id="ans" ${F.shown?'':'hidden'}><div class="fstmt">${t.s}</div>${t.ex?`<div class="explain"><b>הסבר: </b>${t.ex}</div>`:''}</div>
+    <div class="row">${F.shown
+      ? `<button class="btn bad" data-g="0">לא ידעתי</button><button class="btn mid" data-g="1">חלקית</button><button class="btn ok" data-g="2">ידעתי בדיוק</button>`
+      : `<button class="btn" id="reveal">חשוף (רווח)</button>`}</div></div>`;
+  const r = $('#reveal'); if (r) { r.onclick = () => { F.shown = true; drawFlash(); }; r.focus(); }
+  view.querySelectorAll('[data-g]').forEach(b => b.onclick = () => grade(+b.dataset.g));
+  whenMath(()=>typeset(view));
+  stats.innerHTML = `<div class="stat"><small>נראו הסשן</small>${F.seen}</div>`;
+}
+function grade(g){
+  const t = F.list[F.i % F.list.length], L = leitner();
+  L[t.id] = g===2 ? Math.min((L[t.id]||0)+1, 3) : g===1 ? Math.max(L[t.id]||0, 1) : 0;
+  store.set('leitner', L);
+  if (g===0) F.list.splice(F.i + 3, 0, t);   // a miss comes back three cards later
+  F.i++; F.seen++; F.shown = false; drawFlash();
+}
+
+/* ============ MODE 3: SPEED RUN ============ */
+let Q = null, qTimer;
+function startQuiz(){
+  const p = pool().length >= 4 ? pool() : T;
+  Q = { p, lives:3, score:0, streak:0, n:0, cur:null, t0:0, dur:15000, locked:false };
+  nextQ();
+}
+function nextQ(){
+  const t = Q.p[Math.floor(Math.random()*Q.p.length)];
+  const wrong = shuffle(Q.p.filter(x => x.id!==t.id)).slice(0,3);
+  const opts = shuffle([t, ...wrong]);
+  Q.cur = t; Q.locked = false; Q.n++; Q.t0 = Date.now();
+  view.innerHTML = `<div class="panel flash">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="lives" aria-label="חיים">${'♥'.repeat(Q.lives)}${'♡'.repeat(3-Q.lives)}</span><span class="muted">שאלה ${Q.n} · רצף ${Q.streak}</span></div>
+    <div class="timer"><i id="tbar"></i></div>
+    <p style="margin:12px 0 0;font-weight:700">איזה משפט זה?</p>
+    <div class="qstmt">${t.s}</div>
+    <div class="opts">${opts.map(o=>`<button class="opt" data-id="${o.id}">${o.n}</button>`).join('')}</div></div>`;
+  view.querySelectorAll('.opt').forEach(b => b.onclick = () => answer(b.dataset.id));
+  whenMath(()=>typeset(view));
+  clearInterval(qTimer);
+  qTimer = setInterval(()=>{
+    const left = 1 - (Date.now()-Q.t0)/Q.dur, bar = $('#tbar');
+    if (bar) bar.style.width = Math.max(0,left*100)+'%';
+    if (left <= 0) answer(null);
+  }, 100);
+  renderQStats();
+}
+function answer(id){
+  if (Q.locked) return; Q.locked = true; clearInterval(qTimer);
+  const ok = id === Q.cur.id;
+  view.querySelectorAll('.opt').forEach(b => { if (b.dataset.id===Q.cur.id) b.classList.add('right'); else if (b.dataset.id===id) b.classList.add('wrong'); b.disabled = true; });
+  if (ok){ Q.streak++; Q.score += 10 + Math.round(10*(1-(Date.now()-Q.t0)/Q.dur)) + 5*Math.min(Q.streak,10); Q.dur = Math.max(7000, Q.dur-400); }
+  else { Q.streak = 0; Q.lives--; toast(Q.cur, false); }
+  renderQStats();
+  setTimeout(()=>{ if (Q.lives<=0) endQuiz(); else nextQ(); }, ok ? 650 : 1600);
+}
+function renderQStats(){ stats.innerHTML = `<div class="stat"><small>ניקוד</small>${Q.score}</div><div class="stat combo"><small>רצף</small>${Q.streak}</div>`; }
+function endQuiz(){
+  const prev = store.get('quiz-best',0), rec = Q.score>prev; if (rec) store.set('quiz-best', Q.score);
+  view.innerHTML = `<div class="panel win"><div class="big">${Q.score}</div><p>ענית על ${Q.n} שאלות</p><p class="muted">${rec?'שיא חדש':'השיא שלך: '+prev}</p><div class="row" style="justify-content:center"><button class="btn" id="qa">עוד ריצה</button></div></div>`;
+  $('#qa').onclick = startQuiz;
+}
+
+/* ============ shell ============ */
+let mode = 'match';
+function setMode(m){
+  mode = m; clearInterval(qTimer); $('#toastHost').innerHTML='';
+  ['match','flash','quiz'].forEach(k => $('#t-'+k).setAttribute('aria-selected', k===m));
+  $('#sizeWrap').hidden = m!=='match';
+  $('#go').textContent = m==='match' ? 'משחק חדש' : m==='flash' ? 'ערבב מחדש' : 'ריצה חדשה';
+  store.set('mode', m);
+  (m==='match'?startMatch : m==='flash'?startFlash : startQuiz)();
+}
+$('#t-match').onclick = () => setMode('match');
+$('#t-flash').onclick = () => setMode('flash');
+$('#t-quiz').onclick = () => setMode('quiz');
+$('#go').onclick = () => setMode(mode);
+$('#topic').onchange = () => { store.set('topic', $('#topic').value); setMode(mode); };
+$('#size').onchange = () => mode==='match' && startMatch();
+document.addEventListener('keydown', e => {
+  if (mode!=='flash' || !F) return;
+  if (e.code==='Space' && !F.shown){ e.preventDefault(); F.shown=true; drawFlash(); }
+  else if (F.shown && ['Digit1','Digit2','Digit3'].includes(e.code)) grade(+e.code.slice(-1)-1);
+});
+const savedTopic = store.get('topic','all'); if ([...$('#topic').options].some(o=>o.value===savedTopic)) $('#topic').value = savedTopic;
+setMode(store.get('mode','match'));
+</script>
